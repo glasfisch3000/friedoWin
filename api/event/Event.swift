@@ -16,9 +16,9 @@ class Event: Decodable, ObservableObject {
     @Published var name: String
     @Published var shortText: String
     
-    @Published var content: String?
-    @Published var literature: String?
-    @Published var comment: String?
+    @Published var content: AttributedString?
+    @Published var literature: AttributedString?
+    @Published var comment: AttributedString?
     
     @Published var term: Term
     @Published var weeklyHours: Int
@@ -30,7 +30,7 @@ class Event: Decodable, ObservableObject {
     @Published var modules: [Event.Module]?
     @Published var instructors: [Instructor]
     
-    init(id: Int, number: Int, type: EventType, name: String, shortText: String, content: String?, literature: String?, comment: String?, term: Term, weeklyHours: Int, members1: Int, members2: Int, credits: Int?, groups: [Group], modules: [Event.Module]?, instructors: [Instructor]) {
+    init(id: Int, number: Int, type: EventType, name: String, shortText: String, content: AttributedString? = nil, literature: AttributedString? = nil, comment: AttributedString? = nil, term: Term, weeklyHours: Int, members1: Int, members2: Int, credits: Int? = nil, groups: [Group], modules: [Event.Module]? = nil, instructors: [Instructor]) {
         self.id = id
         self.number = number
         self.type = type
@@ -47,6 +47,51 @@ class Event: Decodable, ObservableObject {
         self.groups = groups
         self.modules = modules
         self.instructors = instructors
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.number = try container.decode(Int.self, forKey: .number)
+        self.type = try container.decode(Event.EventType.self, forKey: .type)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.shortText = try container.decode(String.self, forKey: .shortText)
+        
+        self.content = try container.decode(String?.self, forKey: .content)?.parseFriedoLinHTML()
+        self.literature = try container.decode(String?.self, forKey: .literature)?.parseFriedoLinHTML()
+        self.comment = try container.decode(String?.self, forKey: .comment)?.parseFriedoLinHTML()
+        
+        self.term = try container.decode(Term.self, forKey: .term)
+        self.weeklyHours = try container.decode(Int.self, forKey: .weeklyHours)
+        self.members1 = try container.decode(Int.self, forKey: .members1)
+        self.members2 = try container.decode(Int.self, forKey: .members2)
+        self.credits = try container.decode(Int?.self, forKey: .credits)
+        
+        self.groups = try container.decode([Event.Group].self, forKey: .groups)
+        self.modules = try container.decode([Event.Module]?.self, forKey: .modules)
+        self.instructors = try container.decode([Instructor].self, forKey: .instructors)
+    }
+}
+
+extension Event {
+    enum CodingKeys: CodingKey {
+        case id
+        case number
+        case type
+        case name
+        case shortText
+        case content
+        case literature
+        case comment
+        case term
+        case weeklyHours
+        case members1
+        case members2
+        case credits
+        case groups
+        case modules
+        case instructors
     }
 }
 
@@ -68,32 +113,7 @@ extension Event {
 }
 
 extension Event {
-    var parsedContent: AttributedString? {
-        guard let content = content else { return nil }
-        return try? .init(html: content)
-    }
-    
-    var parsedLiterature: AttributedString? {
-        guard let literature = literature else { return nil }
-        return try? .init(html: literature)
-    }
-    
-    var parsedComment: AttributedString? {
-        guard let comment = comment else { return nil }
-        return try? .init(html: comment)
-    }
-}
-
-extension AttributedString {
-    init?(html: String) throws {
-        guard let utf8 = html.data(using: .utf8) else { return nil }
-        
-        let options: [NSAttributedString.DocumentReadingOptionKey : Any] = [
-            .documentType: NSAttributedString.DocumentType.html,
-            .characterEncoding: NSNumber(value: NSUTF8StringEncoding),
-        ]
-        let nsAttrStr = try NSAttributedString.init(data: utf8, options: options, documentAttributes: nil)
-        
-        self.init(nsAttrStr)
+    var friedoLinURL: URL? {
+        URL(string: "https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&publishid=\(self.id)&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung")
     }
 }

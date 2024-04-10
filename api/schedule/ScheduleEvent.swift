@@ -40,12 +40,12 @@ extension Event {
 }
 
 extension Event.ScheduleEvent {
-    struct AdditionalInformation: Decodable {
+    struct AdditionalInformation {
         var shortText: String
         
-        var content: String?
-        var literature: String?
-        var comment: String?
+        var content: AttributedString?
+        var literature: AttributedString?
+        var comment: AttributedString?
         
         var weeklyHours: Int
         var members1: Int
@@ -54,5 +54,35 @@ extension Event.ScheduleEvent {
         
         var modules: [Event.Module]?
         var instructors: [Instructor]
+    }
+}
+
+extension Event.ScheduleEvent.AdditionalInformation: Decodable {
+    enum CodingKeys: CodingKey {
+        case shortText
+        case content
+        case literature
+        case comment
+        case weeklyHours
+        case members1
+        case members2
+        case credits
+        case modules
+        case instructors
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container: KeyedDecodingContainer<CodingKeys> = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.shortText = try container.decode(String.self, forKey: .shortText)
+        self.content = try container.decodeIfPresent(String.self, forKey: .content)?.parseFriedoLinHTML()
+        self.literature = try container.decodeIfPresent(String.self, forKey: .literature)?.parseFriedoLinHTML()
+        self.comment = try container.decodeIfPresent(String.self, forKey: .comment)?.parseFriedoLinHTML()
+        self.weeklyHours = try container.decode(Int.self, forKey: .weeklyHours)
+        self.members1 = try container.decode(Int.self, forKey: .members1)
+        self.members2 = try container.decode(Int.self, forKey: .members2)
+        self.credits = try container.decodeIfPresent(Int.self, forKey: .credits)
+        self.modules = try container.decodeIfPresent([Event.Module].self, forKey: .modules)
+        self.instructors = try container.decode([Instructor].self, forKey: .instructors)
     }
 }

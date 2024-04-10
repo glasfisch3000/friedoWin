@@ -93,19 +93,19 @@ struct EventView: View {
                 }
             }
             
-            if let content = event.parsedContent {
+            if let content = event.content {
                 Section("Content") {
                     Text(content)
                 }
             }
             
-            if let literature = event.parsedLiterature {
+            if let literature = event.literature {
                 Section("Literature") {
                     Text(literature)
                 }
             }
             
-            if let comment = event.parsedComment {
+            if let comment = event.comment {
                 Section("Comment") {
                     Text(comment)
                 }

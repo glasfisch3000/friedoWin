@@ -29,11 +29,7 @@ struct MeetingView: View {
             
             additionalInfoSection()
             
-            if let remark = meeting.parsedRemark {
-                Section("Remark") {
-                    Text(remark)
-                }
-            }
+            remarkSection()
             
             if let group = group {
                 groupSections(group)
@@ -135,6 +131,14 @@ struct MeetingView: View {
                             .lineLimit(1)
                     }
                 }
+            }
+        }
+    }
+    
+    @ViewBuilder private func remarkSection() -> some View {
+        if let remark = meeting.remark {
+            Section("Remark") {
+                Text(remark)
             }
         }
     }

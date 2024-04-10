@@ -9,7 +9,6 @@ import Foundation
 
 class Meeting: Decodable, ObservableObject {
     @Published var type: Event.EventType? = nil
-    @Published var remark: String?
     @Published var room: Room
     @Published var online: Bool
     
@@ -21,9 +20,10 @@ class Meeting: Decodable, ObservableObject {
     @Published var fromDate: Meeting.Date
     @Published var toDate: Meeting.Date
     
-    init(type: Event.EventType? = nil, remark: String?, room: Meeting.Room, online: Bool, fromTime: Time, toTime: Time, frequency: Frequency, weekday: Int, fromDate: Meeting.Date, toDate: Meeting.Date) {
+    @Published var remark: AttributedString?
+    
+    init(type: Event.EventType? = nil, room: Room, online: Bool, fromTime: Time, toTime: Time, frequency: Frequency, weekday: Int, fromDate: Meeting.Date, toDate: Meeting.Date, remark: AttributedString? = nil) {
         self.type = type
-        self.remark = remark
         self.room = room
         self.online = online
         self.fromTime = fromTime
@@ -32,21 +32,42 @@ class Meeting: Decodable, ObservableObject {
         self.weekday = weekday
         self.fromDate = fromDate
         self.toDate = toDate
+        self.remark = remark
     }
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         self.type = try? container.decode(Event.EventType.self, forKey: .type)
-        self.remark = try container.decode(String?.self, forKey: .remark)
         self.room = try container.decode(Meeting.Room.self, forKey: .room)
         self.online = try container.decode(Bool.self, forKey: .online)
+        
         self.fromTime = try container.decode(Meeting.Time.self, forKey: .fromTime)
         self.toTime = try container.decode(Meeting.Time.self, forKey: .toTime)
+        
         self.frequency = try container.decode(Frequency.self, forKey: .frequency)
         self.weekday = try container.decode(Int.self, forKey: .weekday)
         self.fromDate = try container.decode(Meeting.Date.self, forKey: .fromDate)
         self.toDate = try container.decode(Meeting.Date.self, forKey: .toDate)
+        
+        self.remark = try container.decode(String?.self, forKey: .remark)?.parseFriedoLinHTML()
+    }
+}
+
+extension Meeting {
+    enum CodingKeys: CodingKey {
+        case type
+        case remark
+        case room
+        case online
+        
+        case fromTime
+        case toTime
+        
+        case frequency
+        case weekday
+        case fromDate
+        case toDate
     }
 }
 
@@ -84,23 +105,6 @@ extension Meeting {
 
 extension Meeting: Identifiable { }
 
-extension Meeting {
-    enum CodingKeys: CodingKey {
-        case type
-        case remark
-        case room
-        case online
-        
-        case fromTime
-        case toTime
-        
-        case frequency
-        case weekday
-        case fromDate
-        case toDate
-    }
-}
-
 extension Meeting: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(self.type)
@@ -127,12 +131,5 @@ extension Meeting: Hashable {
         guard lhs.fromDate == rhs.fromDate else { return false }
         guard lhs.toDate == rhs.toDate else { return false }
         return true
-    }
-}
-
-extension Meeting {
-    var parsedRemark: AttributedString? {
-        guard let remark = remark else { return nil }
-        return try? .init(html: remark)
     }
 }

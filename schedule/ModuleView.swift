@@ -50,18 +50,18 @@ struct ModuleView: View {
             Section("Workload") {
                 LabeledContent("Hours in Class", value: module.workloadClass, format: .number)
                 LabeledContent("Hours in Private", value: module.workloadPrivate, format: .number)
-                LabeledContent("Credits", value: module.points, format: .number)
+                LabeledContent("Credits", value: module.credits, format: .number)
             }
             
-            if let content = module.parsedContent {
+            if let content = module.content {
                 Section("Content") {
                     Text(content)
                 }
             }
             
-            if let learningOutcomes = module.parsedLearningOutcomes {
+            if let learningObjectives = module.learningObjectives {
                 Section("Learning Outcomes") {
-                    Text(learningOutcomes)
+                    Text(learningObjectives)
                 }
             }
         }
