@@ -8,8 +8,8 @@
 import Foundation
 
 extension FriedoWin {
-    func module(_ moduleID: Module.ID) -> Fetchable<Module> {
-        Fetchable(api: self) { api in
+    func module(_ moduleID: Module.ID) -> APIFetchable<Module> {
+        APIFetchable(source: self) { api in
             do {
                 return try await api.sendRequest("module/\(moduleID)", as: Module.self)
             } catch let error as FriedoWin.Server.RequestError where error == .unauthorized {

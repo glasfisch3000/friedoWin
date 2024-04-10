@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EventView: View {
-    @Fetchable var event: Fetchable<Event>.Status
+    @APIFetchable var event: FetchableStatus<Event>
     var colorHash: Double = 0.4
     
     var body: some View {

@@ -19,7 +19,7 @@ struct EventGroupsView: View {
         case single(group: Event.Group)
     }
     
-    @Fetchable var event: Fetchable<Event>.Status
+    @APIFetchable var event: FetchableStatus<Event>
     var groups: [Event.Group]
     var colorHash: Double
     

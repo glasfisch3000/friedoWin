@@ -10,7 +10,7 @@ import CryptoKit
 import Crypto
 
 struct ScheduleView: View {
-    @Fetchable var schedule: Fetchable<Schedule>.Status
+    @APIFetchable var schedule: FetchableStatus<Schedule>
     
     @State private var presented: ScheduleEntry? = nil
     @State private var pixelHeightPerHour: CGFloat = 60

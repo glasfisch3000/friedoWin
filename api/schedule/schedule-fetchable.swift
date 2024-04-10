@@ -8,8 +8,8 @@
 import Foundation
 
 extension FriedoWin {
-    var schedule: Fetchable<Schedule> {
-        Fetchable(api: self) { api in
+    var schedule: APIFetchable<Schedule> {
+        APIFetchable(source: self) { api in
             do {
                 let events = try await api.sendRequest("schedule", as: [Event.ScheduleEvent].self)
                 

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MeetingView: View {
-    @Fetchable var event: Fetchable<Event>.Status
+    @APIFetchable var event: FetchableStatus<Event>
     var group: Event.Group? = nil
     var meeting: Meeting
     

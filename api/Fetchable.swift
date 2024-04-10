@@ -2,28 +2,18 @@
 //  Fetchable.swift
 //  friedoWin
 //
-//  Created by Jakob Danckwerts on 06.04.24.
+//  Created by Jakob Danckwerts on 10.04.24.
 //
 
 import SwiftUI
 
 @propertyWrapper
-struct Fetchable<Value>: DynamicProperty where Value: Decodable {
-    enum Status {
-        case error
-        case loading
-        case value(_ value: Value)
-        
-        var value: Value? {
-            switch self {
-            case .value(let value): return value
-            default: return nil
-            }
-        }
-    }
+struct Fetchable<Source, Value>: DynamicProperty where Value: Decodable {
+    typealias Status = FetchableStatus<Value>
+    typealias Fetcher = (Source) async throws -> Value
     
-    private var api: FriedoWin
-    private var fetcher: (FriedoWin) async throws -> Value
+    private var source: Source
+    private var fetcher: Fetcher
     
     @State var error: Error? = nil
     @State var cachedValue: Value? = nil
@@ -37,19 +27,19 @@ struct Fetchable<Value>: DynamicProperty where Value: Decodable {
         return .loading
     }
     
-    var projectedValue: FriedoWin {
-        get { self.api }
-        set { self.api = newValue }
+    var projectedValue: Source {
+        get { self.source }
+        set { self.source = newValue }
     }
     
-    init(api: FriedoWin, fetcher: @escaping (FriedoWin) async throws -> Value) {
-        self.api = api
+    init(source: Source, fetcher: @escaping Fetcher) {
+        self.source = source
         self.fetcher = fetcher
     }
     
     func loadValue() async {
         do {
-            let value = try await fetcher(self.api)
+            let value = try await fetcher(self.source)
             self.cachedValue = value
             self.error = nil
         } catch {

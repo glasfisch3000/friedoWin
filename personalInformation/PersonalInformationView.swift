@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PersonalInformationView: View {
-    @Fetchable var personalInformation: Fetchable<PersonalInformation>.Status
+    @APIFetchable var personalInformation: FetchableStatus<PersonalInformation>
     
     var body: some View {
         NavigationStack {

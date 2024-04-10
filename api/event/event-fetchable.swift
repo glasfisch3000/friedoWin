@@ -8,8 +8,8 @@
 import Foundation
 
 extension FriedoWin {
-    func event(_ eventID: Event.ID) -> Fetchable<Event> {
-        Fetchable(api: self) { api in
+    func event(_ eventID: Event.ID) -> APIFetchable<Event> {
+        APIFetchable(source: self) { api in
             do {
                 return try await api.sendRequest("event/\(eventID)", as: Event.self)
             } catch let error as FriedoWin.Server.RequestError where error == .unauthorized {

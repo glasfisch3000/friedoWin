@@ -6,8 +6,8 @@
 //
 
 extension FriedoWin {
-    var personalInformation: Fetchable<PersonalInformation> {
-        Fetchable(api: self) { api in
+    var personalInformation: APIFetchable<PersonalInformation> {
+        APIFetchable(source: self) { api in
             do {
                 return try await api.sendRequest("myInfo", as: PersonalInformation.self)
             } catch let error as FriedoWin.Server.RequestError where error == .unauthorized {

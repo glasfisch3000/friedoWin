@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ModuleView: View {
-    @Fetchable var module: Fetchable<Module>.Status
+    @APIFetchable var module: FetchableStatus<Module>
     
     var body: some View {
         Group {
