@@ -18,6 +18,9 @@ struct ModuleView: View {
             case .value(let module): valueView(module)
             }
         }
+        .refreshable {
+            await _module.loadValue()
+        }
         .navigationTitle("Module Info")
         .navigationBarTitleDisplayMode(.inline)
     }
