@@ -1,3 +1,7 @@
+# macOS shit
+.DS_Store
+*/.DS_Store
+
 # Xcode shit
 Preview Content/
 Assets.xcassets/
