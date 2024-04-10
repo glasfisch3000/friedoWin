@@ -47,6 +47,7 @@ extension FriedoWin.Server {
     enum RequestError: Error, Hashable {
         case missingBody
         case unauthorized
+        case friedoLinDown
         case httpError(status: HTTPStatus)
     }
     
@@ -62,6 +63,13 @@ extension FriedoWin.Server {
             let errorMessage = body.getString(at: body.readerIndex, length: body.readableBytes), errorMessage == "loggedOut" {
             throw RequestError.unauthorized
         }
+        
+        if response.status == .badGateway,
+            let body = response.body,
+            let errorMessage = body.getString(at: body.readerIndex, length: body.readableBytes), errorMessage == "unavailable" {
+            throw RequestError.friedoLinDown
+        }
+        
         guard response.status.mayHaveResponseBody else { throw RequestError.httpError(status: response.status) }
         
         guard let body = response.body else { throw RequestError.missingBody }
@@ -71,26 +79,27 @@ extension FriedoWin.Server {
 }
 
 extension FriedoWin {
-    enum AuthenticationError: Error {
-        case missingBody
-        case invalidStatusCode(_ code: HTTPResponseStatus)
-    }
-    
     struct AuthenticationResult: Hashable, Codable {
         var session: String
     }
     
-    static func authenticate(_ auth: FriedoWin.Credentials, with servers: [FriedoWin.Server]) async throws -> FriedoWin? {
+    static func authenticate(_ auth: FriedoWin.Credentials, with servers: [FriedoWin.Server]) async throws -> FriedoWin {
+        if servers.isEmpty { throw MultiServerRequestError.noServers }
+        
         for server in servers {
             do {
                 let authentication = try await server.sendRequest("login", as: AuthenticationResult.self, method: .POST, query: auth)
                 return .init(servers: servers, token: authentication.session)
+            } catch let error as Server.RequestError where error == .friedoLinDown {
+                print("friedoLin down")
+                throw error
             } catch {
                 print(error)
                 continue
             }
         }
-        return nil
+        
+        throw MultiServerRequestError.noResult
     }
 }
 

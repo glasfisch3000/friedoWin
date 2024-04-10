@@ -41,56 +41,95 @@ struct ContentView: View {
     
     @ViewBuilder private func loginView() -> some View {
         Form {
-            Spacer()
-            
-            HStack {
+            VStack(spacing: 20) {
                 Spacer()
                 
-                (Text("Friedo") + Text("W").bold() + Text("in"))
-                    .font(.largeTitle)
+                HStack {
+                    Spacer()
+                    
+                    (Text("Friedo") + Text("W").bold() + Text("in"))
+                        .font(.largeTitle)
+                    
+                    Spacer()
+                }
+                
+                VStack {
+                    TextField("Username", text: $username)
+                        .backgroundStyle(.tertiary)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.alphabet)
+                        .textInputAutocapitalization(.never)
+                        .scrollDismissesKeyboard(.immediately)
+                        .textContentType(.username)
+                        .autocorrectionDisabled()
+                    
+                    SecureField("Password", text: $password)
+                        .backgroundStyle(.tertiary)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.default)
+                        .scrollDismissesKeyboard(.immediately)
+                        .textContentType(.password)
+                }
+                
+                if let error = authenticationError {
+                    switch error {
+                    case FriedoWin.Server.RequestError.friedoLinDown: loginFriedoLinDownErrorView()
+                    default: loginOtherErrorView(error)
+                    }
+                }
                 
                 Spacer()
+                
+                Button {
+                    authenticate()
+                } label: {
+                    Text("Log In")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.defaultAction)
+                .tint(Color.accentColor)
             }
-            .padding(.bottom)
-            
-            TextField("Username", text: $username)
-                .backgroundStyle(.tertiary)
-                .textFieldStyle(.roundedBorder)
-                .keyboardType(.alphabet)
-                .textInputAutocapitalization(.never)
-                .scrollDismissesKeyboard(.immediately)
-                .textContentType(.username)
-//                .autocorrectionDisabled()
-            
-            SecureField("Password", text: $password)
-                .backgroundStyle(.tertiary)
-                .textFieldStyle(.roundedBorder)
-                .keyboardType(.default)
-                .scrollDismissesKeyboard(.immediately)
-                .textContentType(.password)
-            
-            if let error = authenticationError {
-                Text((error as CustomStringConvertible).description)
-                    .font(.caption)
-                    .foregroundStyle(.red)
-            }
-            
-            Spacer()
-            
-            Button {
-                authenticate()
-            } label: {
-                Text("Log In")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .keyboardShortcut(.defaultAction)
-            .tint(Color.accentColor)
         }
         .formStyle(.columns)
         .font(.title2)
         .padding()
         .padding()
+    }
+    
+    @ViewBuilder private func loginFriedoLinDownErrorView() -> some View {
+        VStack {
+            Text("FriedoLin is currently not available.")
+                .foregroundStyle(.red)
+            
+            Text("This may be due to regular maintenance work. Check out [friedoLin.uni-jena.de](https://friedolin.uni-jena.de/)")
+                .font(.caption)
+        }
+    }
+    
+    @ViewBuilder private func loginNoServersErrorView() -> some View {
+        VStack {
+            Text("Authentication failed.")
+                .foregroundStyle(.red)
+            
+            Text("No servers to authenticate.")
+                .font(.caption)
+        }
+    }
+    
+    @ViewBuilder private func loginNoResultsErrorView() -> some View {
+        Text("Authentication failed.")
+            .foregroundStyle(.red)
+    }
+    
+    @ViewBuilder private func loginOtherErrorView(_ error: Error) -> some View {
+        VStack {
+            Text("Authentication failed.")
+                .foregroundStyle(.red)
+            
+            Text((error as CustomStringConvertible).description)
+                .font(.caption)
+        }
     }
     
     func authenticate(storeCredentials: Bool = true) {
