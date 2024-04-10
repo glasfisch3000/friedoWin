@@ -16,7 +16,7 @@ struct InstructorsView: View {
                 LabeledContent("Name", value: instructor.name)
                 LabeledContent("Type", value: instructor.responsibility.description)
             } header: {
-                Text(instructor.id, format: .number.grouping(.never))
+                Text("ID ") + Text(instructor.id, format: .number.grouping(.never))
             }
         }
         .navigationTitle("Event Instructors Info")
