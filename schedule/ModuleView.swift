@@ -45,6 +45,10 @@ struct ModuleView: View {
                 LabeledContent("ID", value: module.id, format: .number.grouping(.never))
                 LabeledContent("Name", value: module.name)
                 LabeledContent("Short Text", value: module.shortText)
+                
+                if let url = module.friedoLinURL {
+                    Link("View on FriedoLin", destination: url)
+                }
             }
             
             Section("Workload") {
