@@ -43,7 +43,9 @@ struct EventView: View {
 //                LabeledContent("ID", value: event.id, format: .number.grouping(.never))
                 LabeledContent("Number", value: event.number, format: .number.grouping(.never))
                 
-                Link("View on FriedoLin", destination: URL(string: "https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&publishid=\(event.id)&moduleCall=webInfo&publishConfFile=webInfo&publishSubDir=veranstaltung")!)
+                if let url = event.friedoLinURL {
+                    Link("View on FriedoLin", destination: url)
+                }
             }
             
             Section {
