@@ -160,6 +160,11 @@ struct ContentView: View {
         }
     }
     
+    func friedoLinDown() {
+        self.authenticated = nil
+        self.authenticationError = FriedoWin.Server.RequestError.friedoLinDown
+    }
+    
     private func loadCredentials() throws -> Keychain.Credentials? {
         try Keychain.default.fetchItem(for: "friedowin.lelux.net")
     }

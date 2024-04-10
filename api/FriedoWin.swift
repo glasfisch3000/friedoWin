@@ -59,6 +59,7 @@ class FriedoWin {
     var token: Token
     
     internal var reauthenticate: (() -> ())? = nil
+    internal var friedoLinDown: (() -> ())? = nil
     
     init(servers: [Server], token: Token) {
         self.servers = servers

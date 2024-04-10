@@ -140,6 +140,12 @@ extension FriedoWin {
         for server in self.servers {
             do {
                 return try await server.sendRequest(path, as: type, method: method, query: query, headers: ["Authorization": "Bearer \(self.token)"])
+            } catch let error as Server.RequestError where error == .friedoLinDown {
+                print("friedoLin down")
+                throw error
+            } catch let error as Server.RequestError where error == .unauthorized {
+                print("unauthorized")
+                throw error
             } catch {
                 print(error)
                 continue

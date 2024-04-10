@@ -15,6 +15,9 @@ extension FriedoWin {
             } catch let error as FriedoWin.Server.RequestError where error == .unauthorized {
                 api.reauthenticate?()
                 throw error
+            } catch let error as FriedoWin.Server.RequestError where error == .friedoLinDown {
+                api.friedoLinDown?()
+                throw error
             } catch {
                 print("error while fetching module \(moduleID): \(error)")
                 throw error
