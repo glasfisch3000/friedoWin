@@ -20,6 +20,7 @@ struct DishDetailsView: View {
                         Text(dish.food.description)
                     }
                 }
+                .listRowBackground(dish.food.diet.color.opacity(0.4))
             }
             
             Section("Prices") {
@@ -34,6 +35,7 @@ struct DishDetailsView: View {
                         ingredientItem(ingredients[index])
                     }
                 }
+                .listRowSeparatorTint(.secondary.opacity(0.5))
             }
         }
         .navigationTitle("Dish Details")
