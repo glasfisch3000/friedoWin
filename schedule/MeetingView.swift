@@ -97,11 +97,25 @@ struct MeetingView: View {
     
     @ViewBuilder private func dateTimeSection() -> some View {
         Section("Date and Time") {
-            if let startTime = meeting.fromTime.asDate(), let endTime = meeting.toTime.asDate() {
+            let startTime = meeting.fromTime?.asDate()
+            let endTime = meeting.toTime?.asDate()
+            if startTime != nil || endTime != nil {
                 LabeledContent("Time") {
-                    Text(startTime, format: Date.FormatStyle(time: .shortened)) +
-                    Text(" - ") +
-                    Text(endTime, format: Date.FormatStyle(time: .shortened))
+                    HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        if let startTime = startTime {
+                            Text(startTime, format: Date.FormatStyle(time: .shortened))
+                        } else {
+                            Text("?")
+                        }
+                        
+                        Text(" - ")
+                        
+                        if let endTime = endTime {
+                            Text(endTime, format: Date.FormatStyle(time: .shortened))
+                        } else {
+                            Text("?")
+                        }
+                    }
                 }
             }
             
@@ -199,7 +213,8 @@ struct MeetingView: View {
         
         ForEach(group.meetings.filter { $0.frequency == .once }.sorted {
             if let date1 = $0.fromDate.asDate(), let date2 = $1.fromDate.asDate() { return date1 < date2 }
-            return $0.weekdayTime < $1.weekdayTime
+            if let wt1 = $0.weekdayTime, let wt2 = $1.weekdayTime { return wt1 < wt2 }
+            return $0.weekday < $1.weekday
         }) { meeting in
             NavigationLink {
                 MeetingView(event: self._event, meeting: meeting, colorHash: colorHash, simple: true)
@@ -214,19 +229,35 @@ struct MeetingView: View {
     }
     
     func sort(_ meetings: [Meeting], event: Event?) -> [Int: TimetableWeekday<Item>] {
-        let meetings = meetings.filter { $0.frequency != .once }.sorted { $0.weekdayTime < $1.weekdayTime }
+        let meetings = meetings
+            .filter { $0.frequency != .once }
+            .compactMap { meeting -> (Meeting, Meeting.Time, Meeting.Time)? in
+                guard let fromTime = meeting.fromTime else { return nil }
+                guard let toTime = meeting.toTime else { return nil }
+                return (meeting, fromTime, toTime)
+            }
+            .sorted {
+                let wt0 = WeekdayTime(weekday: $0.0.weekday, time: $0.1)
+                let wt1 = WeekdayTime(weekday: $1.0.weekday, time: $1.1)
+                return wt0 < wt1
+            }
+        
         var weekdays: [Int: TimetableWeekday<Item>] = [:]
         
         for weekday in 0..<7 {
             var columns: [TimetableColumn<Item>] = []
             
             for meetingIndex in meetings.indices {
-                let meeting = meetings[meetingIndex]
+                let (meeting, fromTime, toTime) = meetings[meetingIndex]
                 
                 guard meeting.weekday == weekday else { continue }
                 
-                let entry = Item(index: meetingIndex, colorHash: colorHash, isSecondary: meeting.id != self.meeting.id, event: event, meeting: meeting)
-                if let column = columns.firstIndex(where: { !$0.contains { $0.meeting.timeIntersects(with: meeting) } }) {
+                let entry = Item(index: meetingIndex, colorHash: colorHash, isSecondary: meeting.id != self.meeting.id, event: event, meeting: meeting, start: fromTime, end: toTime)
+                let column = columns.firstIndex {
+                    !$0.contains { $0.timeIntersects(with: entry) }
+                }
+                
+                if let column = column {
                     columns[column].append(entry)
                 } else {
                     columns.append([entry])
@@ -249,6 +280,9 @@ extension MeetingView {
         var event: Event?
         var meeting: Meeting
         
+        var start: Meeting.Time
+        var end: Meeting.Time
+        
         var id: ID { meeting.id }
         
         var type: Event.EventType? { meeting.type ?? event?.type }
@@ -259,8 +293,5 @@ extension MeetingView {
         func color(colorScheme: ColorScheme) -> Color {
             return Color(hash: colorHash, colorScheme: colorScheme)
         }
-        
-        var start: Meeting.Time { meeting.fromTime }
-        var end: Meeting.Time { meeting.toTime }
     }
 }

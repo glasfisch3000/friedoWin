@@ -20,3 +20,13 @@ protocol TimetableEntry: Identifiable {
     var start: Meeting.Time { get }
     var end: Meeting.Time { get }
 }
+
+extension TimetableEntry {
+    func timeIntersects(with entry: Self) -> Bool {
+        if self.start < entry.start {
+            return self.end > entry.start
+        } else {
+            return self.start < entry.end
+        }
+    }
+}

@@ -12,6 +12,9 @@ struct ScheduleEntry {
     var group: Event.Group
     var meeting: Meeting
     
+    var start: Meeting.Time
+    var end: Meeting.Time
+    
     var colorHash: Double
 }
 
@@ -27,9 +30,6 @@ extension ScheduleEntry: TimetableEntry {
     }
     
     var isSecondary: Bool { type.isSecondary }
-    
-    var start: Meeting.Time { meeting.fromTime }
-    var end: Meeting.Time { meeting.toTime }
 }
 
 extension Color {

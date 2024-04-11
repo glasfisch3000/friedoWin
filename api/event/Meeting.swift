@@ -12,9 +12,9 @@ class Meeting: Decodable, ObservableObject {
     @Published var room: Room
     @Published var online: Bool
     
-    @Published var fromTime: Time
+    @Published var fromTime: Time?
     @Published var timeOffset: TimeOffset?
-    @Published var toTime: Time
+    @Published var toTime: Time?
     
     @Published var frequency: Frequency
     @Published var weekday: Int
@@ -90,20 +90,28 @@ extension Meeting {
         return true
     }
     
-    func timeIntersects(with meeting: Meeting) -> Bool {
-        if self.fromTime < meeting.fromTime {
-            return self.toTime > meeting.fromTime
+    func timeIntersects(with meeting: Meeting) -> Bool? {
+        guard let lFromTime = self.fromTime else { return nil }
+        guard let lToTime = self.toTime else { return nil }
+        guard let rFromTime = meeting.fromTime else { return nil }
+        guard let rToTime = meeting.toTime else { return nil }
+        
+        if lFromTime < rFromTime {
+            return lToTime > rFromTime
         } else {
-            return self.fromTime < meeting.toTime
+            return lFromTime < rToTime
         }
     }
     
-    var duration: Time {
-        self.toTime - self.fromTime
+    var duration: Time? {
+        guard let from = self.fromTime else { return nil }
+        guard let to = self.toTime else { return nil }
+        return to - from
     }
     
-    var weekdayTime: WeekdayTime {
-        .init(weekday: self.weekday, time: self.fromTime)
+    var weekdayTime: WeekdayTime? {
+        guard let fromTime = self.fromTime else { return nil }
+        return WeekdayTime(weekday: self.weekday, time: fromTime)
     }
 }
 

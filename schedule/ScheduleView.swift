@@ -105,9 +105,15 @@ struct ScheduleView: View {
                     for group in event.groups {
                         for meeting in group.meetings {
                             guard meeting.isOn(meetingDate, with: calendar) ?? false else { continue }
+                            guard let start = meeting.fromTime else { continue }
+                            guard let end = meeting.toTime else { continue }
                             
-                            let entry = ScheduleEntry(event: event, group: group, meeting: meeting, colorHash: eventColorHash)
-                            if let column = columns.firstIndex(where: { !$0.contains { $0.meeting.timeIntersects(with: meeting) } }) {
+                            let entry = ScheduleEntry(event: event, group: group, meeting: meeting, start: start, end: end, colorHash: eventColorHash)
+                            let column = columns.firstIndex {
+                                !$0.contains { $0.timeIntersects(with: entry) }
+                            }
+                            
+                            if let column = column {
                                 columns[column].append(entry)
                             } else {
                                 columns.append([entry])

@@ -11,6 +11,11 @@ extension Meeting {
     struct Time: Decodable {
         var hour: Int
         var minute: Int
+        
+        init(hour: Int, minute: Int) {
+            self.hour = hour
+            self.minute = minute
+        }
     }
 }
 
@@ -46,7 +51,7 @@ extension Meeting.Time {
     var normalized: Self {
         switch minute {
         case 60...: return .init(hour: hour + minute/60, minute: minute%60)
-        case ..<0: return .init(hour: hour + minute/60, minute: (minute%60 + 60) % 60)
+        case ..<0: return .init(hour: hour - Int(minute.magnitude+59)/60, minute: (minute%60 + 60) % 60)
         default: return self
         }
     }

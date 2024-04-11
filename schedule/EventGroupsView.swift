@@ -91,7 +91,8 @@ struct EventGroupsView: View {
         ForEach(groups) { group in
             ForEach(group.meetings.filter { $0.frequency == .once }.sorted {
                 if let date1 = $0.fromDate.asDate(), let date2 = $1.fromDate.asDate() { return date1 < date2 }
-                return $0.weekdayTime < $1.weekdayTime
+                if let wt1 = $0.weekdayTime, let wt2 = $1.weekdayTime { return wt1 < wt2 }
+                return $0.weekday < $1.weekday
             }) { meeting in
                 NavigationLink {
                     MeetingView(event: self._event, group: group, meeting: meeting, colorHash: colorHash, simple: true)
@@ -122,8 +123,15 @@ struct EventGroupsView: View {
                     guard meeting.frequency != .once else { continue }
                     guard meeting.weekday == weekday else { continue }
                     
-                    let item = Item(event: event, group: group, meeting: meeting, colorHash: groupColorHash)
-                    if let column = columns.firstIndex(where: { !$0.contains { $0.meeting.timeIntersects(with: meeting) } }) {
+                    guard let start = meeting.fromTime else { continue }
+                    guard let end = meeting.toTime else { continue }
+                    
+                    let item = Item(event: event, group: group, meeting: meeting, start: start, end: end, colorHash: groupColorHash)
+                    let column = columns.firstIndex {
+                        !$0.contains { $0.timeIntersects(with: item) }
+                    }
+                    
+                    if let column = column {
                         columns[column].append(item)
                     } else {
                         columns.append([item])
@@ -144,6 +152,9 @@ extension EventGroupsView {
         var group: Event.Group
         var meeting: Meeting
         
+        var start: Meeting.Time
+        var end: Meeting.Time
+        
         var colorHash: Double
         
         var id: ID { meeting.id }
@@ -158,8 +169,5 @@ extension EventGroupsView {
         }
         
         var isSecondary: Bool { type?.isSecondary ?? false }
-        
-        var start: Meeting.Time { meeting.fromTime }
-        var end: Meeting.Time { meeting.toTime }
     }
 }

@@ -100,8 +100,7 @@ extension Event: Identifiable { }
 extension Event {
     var firstOccurrence: WeekdayTime? {
         self.groups.flatMap(\.meetings).reduce(nil) { result, meeting in
-            let occurrence = meeting.weekdayTime
-            
+            guard let occurrence = meeting.weekdayTime else { return result }
             guard let result = result else { return occurrence }
             return min(occurrence, result)
         }
