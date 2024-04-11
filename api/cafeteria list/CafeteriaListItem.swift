@@ -10,16 +10,16 @@ import Foundation
 extension Cafeteria {
     struct ListItem: Decodable {
         var id: Int
+        var name: String
         
         func construct(with additional: AdditionalInformation) -> Cafeteria {
             .init(id: self.id,
-                  meals: additional.meals)
+                  name: self.name,
+                  meals: additional)
         }
     }
 }
 
 extension Cafeteria.ListItem {
-    struct AdditionalInformation: Decodable {
-        var meals: [Meal]
-    }
+    typealias AdditionalInformation = [Meal]
 }
