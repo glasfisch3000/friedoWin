@@ -47,7 +47,7 @@ extension Event.ScheduleEvent {
         var literature: AttributedString?
         var comment: AttributedString?
         
-        var weeklyHours: Int
+        var weeklyHours: Double
         var members1: Int
         var members2: Int
         var credits: Int?
@@ -78,7 +78,7 @@ extension Event.ScheduleEvent.AdditionalInformation: Decodable {
         self.content = try container.decodeIfPresent(String.self, forKey: .content)?.parseFriedoLinHTML()
         self.literature = try container.decodeIfPresent(String.self, forKey: .literature)?.parseFriedoLinHTML()
         self.comment = try container.decodeIfPresent(String.self, forKey: .comment)?.parseFriedoLinHTML()
-        self.weeklyHours = try container.decode(Int.self, forKey: .weeklyHours)
+        self.weeklyHours = try container.decode(Double.self, forKey: .weeklyHours)
         self.members1 = try container.decode(Int.self, forKey: .members1)
         self.members2 = try container.decode(Int.self, forKey: .members2)
         self.credits = try container.decodeIfPresent(Int.self, forKey: .credits)

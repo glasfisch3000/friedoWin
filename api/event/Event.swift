@@ -21,7 +21,7 @@ class Event: Decodable, ObservableObject {
     @Published var comment: AttributedString?
     
     @Published var term: Term
-    @Published var weeklyHours: Int
+    @Published var weeklyHours: Double
     @Published var members1: Int
     @Published var members2: Int
     @Published var credits: Int?
@@ -30,7 +30,7 @@ class Event: Decodable, ObservableObject {
     @Published var modules: [Event.Module]?
     @Published var instructors: [Instructor]
     
-    init(id: Int, number: Int, type: EventType, name: String, shortText: String, content: AttributedString? = nil, literature: AttributedString? = nil, comment: AttributedString? = nil, term: Term, weeklyHours: Int, members1: Int, members2: Int, credits: Int? = nil, groups: [Group], modules: [Event.Module]? = nil, instructors: [Instructor]) {
+    init(id: Int, number: Int, type: EventType, name: String, shortText: String, content: AttributedString? = nil, literature: AttributedString? = nil, comment: AttributedString? = nil, term: Term, weeklyHours: Double, members1: Int, members2: Int, credits: Int? = nil, groups: [Group], modules: [Event.Module]? = nil, instructors: [Instructor]) {
         self.id = id
         self.number = number
         self.type = type
@@ -63,7 +63,7 @@ class Event: Decodable, ObservableObject {
         self.comment = try container.decode(String?.self, forKey: .comment)?.parseFriedoLinHTML()
         
         self.term = try container.decode(Term.self, forKey: .term)
-        self.weeklyHours = try container.decode(Int.self, forKey: .weeklyHours)
+        self.weeklyHours = try container.decode(Double.self, forKey: .weeklyHours)
         self.members1 = try container.decode(Int.self, forKey: .members1)
         self.members2 = try container.decode(Int.self, forKey: .members2)
         self.credits = try container.decode(Int?.self, forKey: .credits)
