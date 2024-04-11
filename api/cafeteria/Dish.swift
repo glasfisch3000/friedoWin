@@ -27,9 +27,9 @@ class Dish: Decodable, ObservableObject {
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        let name = try container.decode(String.self, forKey: .name)
-        let description = try container.decode(String.self, forKey: .description)
-        let diet = try container.decode(String.self, forKey: .diet)
+        let name = Food.formatName(try container.decode(String.self, forKey: .name))
+        let description = Food.formatDescription(try container.decode(String.self, forKey: .description))
+        let diet = try container.decode(Diet.self, forKey: .diet)
         self.food = .init(name: name, description: description, diet: diet)
         
         self.studentPrice = try container.decode(Dish.Price.self, forKey: .studentPrice)
