@@ -31,3 +31,13 @@ extension Cafeteria {
 }
 
 extension Cafeteria: Identifiable { }
+
+extension Cafeteria: Hashable {
+    static func == (lhs: Cafeteria, rhs: Cafeteria) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}
