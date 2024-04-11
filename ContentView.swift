@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    enum TabSelection: String, Hashable {
+        case personalInformation
+        case schedule
+        case cafeteria
+    }
+    
     @ArrayAppStorage("friedowin.server") var servers: [FriedoWin.Server] = [.init(domain: "friedowin.lelux.net")]
     
     @State private var authenticated: FriedoWin? = nil
@@ -17,20 +23,39 @@ struct ContentView: View {
     @State private var username = ""
     @State private var password = ""
     
+    @AppStorage("selectedTab") private var selectedTab: TabSelection = .schedule
+    
     var body: some View {
-        ZStack {
+        TabView(selection: $selectedTab) {
             Group {
                 if let authenticated = authenticated {
-                    authenticatedView(api: authenticated)
+                    PersonalInformationView(personalInformation: authenticated.personalInformation)
                 } else {
                     loginView()
                 }
             }
-            .hidden(reauthenticating)
-            
-            if reauthenticating {
-                ProgressView()
+            .tag(ContentView.TabSelection.personalInformation)
+            .tabItem {
+                Label("My Info", systemImage: "person.crop.circle")
             }
+            
+            Group {
+                if let authenticated = authenticated {
+                    ScheduleView(schedule: authenticated.schedule)
+                } else {
+                    loginView()
+                }
+            }
+            .tag(ContentView.TabSelection.schedule)
+            .tabItem {
+                Label("Timetable", systemImage: "calendar")
+            }
+            
+            MenuView(menu: servers.menu)
+                .tag(TabSelection.cafeteria)
+                .tabItem {
+                    Label("Cafeteria", systemImage: "fork.knife")
+                }
         }
         .onAppear(perform: self.tryReauthenticate)
     }
@@ -70,6 +95,7 @@ struct ContentView: View {
                         .scrollDismissesKeyboard(.immediately)
                         .textContentType(.password)
                 }
+                .disabled(reauthenticating)
                 
                 if let error = authenticationError {
                     switch error {
@@ -80,15 +106,19 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                Button {
-                    authenticate()
-                } label: {
-                    Text("Log In")
-                        .frame(maxWidth: .infinity)
+                if reauthenticating {
+                    ProgressView()
+                } else {
+                    Button {
+                        authenticate()
+                    } label: {
+                        Text("Log In")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .keyboardShortcut(.defaultAction)
+                    .tint(Color.accentColor)
                 }
-                .buttonStyle(.borderedProminent)
-                .keyboardShortcut(.defaultAction)
-                .tint(Color.accentColor)
             }
         }
         .formStyle(.columns)
