@@ -83,6 +83,7 @@ struct MenuView: View {
             }
             
             timeView(selection, entries: menu[selection] ?? [:])
+                .listRowSeparatorTint(.secondary.opacity(0.5))
         }
     }
     
