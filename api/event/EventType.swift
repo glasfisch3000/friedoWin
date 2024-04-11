@@ -102,30 +102,8 @@ extension Event.EventType: CustomStringConvertible {
 extension Event.EventType {
     var isSecondary: Bool {
         switch self {
-//        case .advancedSeminar:
-//        case .blockage:
-//        case .colloquium:
-//        case .consultation:
-//        case .exam:
-//        case .excursion:
         case .exercise: return true
-//        case .fieldExercise:
-//        case .languageCourse:
-//        case .lectureExercise:
         case .lecture: return false
-//        case .mainSeminar:
-//        case .optionalLecture:
-//        case .optionalSeminar:
-//        case .practicalWork:
-//        case .project:
-//        case .propaedeutic:
-//        case .proseminar:
-//        case .repeatExam:
-//        case .seminar:
-//        case .seminarExercise:
-//        case .training:
-//        case .trainingResearchProject:
-//        case .tutorial:
         default: return false
         }
     }
