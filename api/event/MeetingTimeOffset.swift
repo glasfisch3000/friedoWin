@@ -5,8 +5,6 @@
 //  Created by Jakob Danckwerts on 11.04.24.
 //
 
-import Foundation
-
 extension Meeting {
     enum TimeOffset: Int {
         case none = 0

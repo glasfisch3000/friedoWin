@@ -5,8 +5,6 @@
 //  Created by Jakob Danckwerts on 07.04.24.
 //
 
-import Foundation
-
 extension Event {
     enum EventType: String, Decodable {
         case advancedModule

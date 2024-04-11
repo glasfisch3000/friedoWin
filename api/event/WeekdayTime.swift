@@ -5,8 +5,6 @@
 //  Created by Jakob Danckwerts on 08.04.24.
 //
 
-import Foundation
-
 struct WeekdayTime: Comparable {
     var weekday: Int
     var time: Meeting.Time

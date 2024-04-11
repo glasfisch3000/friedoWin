@@ -5,8 +5,6 @@
 //  Created by Jakob Danckwerts on 08.04.24.
 //
 
-import Foundation
-
 extension FriedoWin {
     func event(_ eventID: Event.ID) -> APIFetchable<Event> {
         APIFetchable(source: self) { api in
