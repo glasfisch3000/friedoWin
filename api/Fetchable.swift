@@ -8,7 +8,7 @@
 import SwiftUI
 
 @propertyWrapper
-struct Fetchable<Source, Value>: DynamicProperty where Value: Decodable {
+struct Fetchable<Source, Value>: DynamicProperty {
     typealias Status = FetchableStatus<Value>
     typealias Fetcher = (Source) async throws -> Value
     
