@@ -14,9 +14,9 @@ class Dish: Decodable, ObservableObject {
     @Published var employeePrice: Dish.Price
     @Published var guestPrice: Dish.Price
     
-    @Published var ingredients: [Food]
+    @Published var ingredients: [Food]?
     
-    init(food: Food, studentPrice: Dish.Price, employeePrice: Dish.Price, guestPrice: Dish.Price, ingredients: [Food]) {
+    init(food: Food, studentPrice: Dish.Price, employeePrice: Dish.Price, guestPrice: Dish.Price, ingredients: [Food]?) {
         self.food = food
         self.studentPrice = studentPrice
         self.employeePrice = employeePrice
@@ -35,7 +35,7 @@ class Dish: Decodable, ObservableObject {
         self.studentPrice = try container.decode(Dish.Price.self, forKey: .studentPrice)
         self.employeePrice = try container.decode(Dish.Price.self, forKey: .employeePrice)
         self.guestPrice = try container.decode(Dish.Price.self, forKey: .guestPrice)
-        self.ingredients = try container.decode([Food].self, forKey: .ingredients)
+        self.ingredients = try container.decode([Food]?.self, forKey: .ingredients)
     }
 }
 
