@@ -13,6 +13,7 @@ class Meeting: Decodable, ObservableObject {
     @Published var online: Bool
     
     @Published var fromTime: Time
+    @Published var timeOffset: TimeOffset?
     @Published var toTime: Time
     
     @Published var frequency: Frequency
@@ -22,11 +23,12 @@ class Meeting: Decodable, ObservableObject {
     
     @Published var remark: AttributedString?
     
-    init(type: Event.EventType? = nil, room: Room, online: Bool, fromTime: Time, toTime: Time, frequency: Frequency, weekday: Int, fromDate: Meeting.Date, toDate: Meeting.Date, remark: AttributedString? = nil) {
+    init(type: Event.EventType? = nil, room: Room, online: Bool, fromTime: Time, timeOffset: TimeOffset? = nil, toTime: Time, frequency: Frequency, weekday: Int, fromDate: Meeting.Date, toDate: Meeting.Date, remark: AttributedString? = nil) {
         self.type = type
         self.room = room
         self.online = online
         self.fromTime = fromTime
+        self.timeOffset = timeOffset
         self.toTime = toTime
         self.frequency = frequency
         self.weekday = weekday
@@ -43,6 +45,7 @@ class Meeting: Decodable, ObservableObject {
         self.online = try container.decode(Bool.self, forKey: .online)
         
         self.fromTime = try container.decode(Meeting.Time.self, forKey: .fromTime)
+        self.timeOffset = try container.decode(Meeting.TimeOffset?.self, forKey: .timeOffset)
         self.toTime = try container.decode(Meeting.Time.self, forKey: .toTime)
         
         self.frequency = try container.decode(Frequency.self, forKey: .frequency)
@@ -62,6 +65,7 @@ extension Meeting {
         case online
         
         case fromTime
+        case timeOffset
         case toTime
         
         case frequency
