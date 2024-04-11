@@ -27,22 +27,30 @@ extension [FriedoWin.Server] {
         }
     }
     
-    fileprivate func fetchCafeteriaList() async throws -> [Cafeteria.ListItem] {
-        if self.isEmpty { throw FriedoWin.MultiServerRequestError.noServers }
-        
-        for server in self {
-            do {
-                return try await server.sendRequest("cafeterias", as: [Cafeteria.ListItem].self)
-            } catch {
-                print(error)
-                continue
-            }
-        }
-        
-        throw FriedoWin.MultiServerRequestError.noResult
+    internal func fetchCafeteriaList() async throws -> [Cafeteria.ListItem] {
+        return [
+            .init(id: 41, name: "Mensa Ernst-Abbe-Platz"),
+            .init(id: 58, name: "Mensa Carl-Zeiss-Promenade"),
+            .init(id: 59, name: "Mensa Philosophenweg"),
+            .init(id: 64, name: "Mensa Unihauptgebäude"),
+            .init(id: 61, name: "Mensa Moritz-von-Rohr-Straße"),
+            .init(id: 63, name: "Mensa zur Rosen")
+        ]
+//        if self.isEmpty { throw FriedoWin.MultiServerRequestError.noServers }
+//        
+//        for server in self {
+//            do {
+//                return try await server.sendRequest("cafeterias", as: [Cafeteria.ListItem].self)
+//            } catch {
+//                print(error)
+//                continue
+//            }
+//        }
+//        
+//        throw FriedoWin.MultiServerRequestError.noResult
     }
     
-    fileprivate func fetchCafeteria(_ id: Cafeteria.ID) async throws -> Cafeteria.ListItem.AdditionalInformation {
+    internal func fetchCafeteria(_ id: Cafeteria.ID) async throws -> Cafeteria.ListItem.AdditionalInformation {
         if self.isEmpty { throw FriedoWin.MultiServerRequestError.noServers }
         
         for server in self {
