@@ -50,3 +50,45 @@ extension Dish {
         case ingredients
     }
 }
+
+extension Dish: Hashable {
+    static func == (lhs: Dish, rhs: Dish) -> Bool {
+        lhs.food == rhs.food &&
+        lhs.studentPrice == rhs.studentPrice &&
+        lhs.employeePrice == rhs.employeePrice &&
+        lhs.guestPrice == rhs.guestPrice &&
+        lhs.ingredients == rhs.ingredients
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(food)
+        hasher.combine(studentPrice)
+        hasher.combine(employeePrice)
+        hasher.combine(guestPrice)
+        hasher.combine(ingredients)
+    }
+}
+
+extension Dish: Identifiable {
+    var id: Dish { self }
+}
+
+extension Dish {
+    func price(type: Price.PriceType) -> Price {
+        switch type {
+        case .student: self.studentPrice
+        case .employee: self.employeePrice
+        case .guest: self.guestPrice
+        }
+    }
+}
+
+extension Collection where Element == Dish {
+    func sorted(with priceType: Dish.Price.PriceType) -> [Dish] {
+        switch priceType {
+        case .student: self.sorted { $0.studentPrice < $1.studentPrice }
+        case .employee: self.sorted { $0.employeePrice < $1.employeePrice }
+        case .guest: self.sorted { $0.guestPrice < $1.guestPrice }
+        }
+    }
+}
