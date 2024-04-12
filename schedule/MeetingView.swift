@@ -138,7 +138,7 @@ struct MeetingView: View {
             
             if meeting.room.id != 0 {
                 NavigationLink {
-                    MeetingRoomView(room: meeting.room)
+                    RoomView(room: $event.room(meeting.room.id))
                 } label: {
                     LabeledContent("Room") {
                         Text(meeting.room.name)
