@@ -69,7 +69,7 @@ extension RoomView {
         var body: some View {
             Form {
                 Section {
-                    LabeledContent("Name", value: "\(room.name) (\(room.building.name))")
+                    LabeledContent("Name", value: room.name)
                     LabeledContent("Short Name", value: room.shortName)
                     
                     if room.additionalName != room.name {
@@ -83,16 +83,18 @@ extension RoomView {
                     }
                 }
                 
-                Section {
-                    switch building {
-                    case .error:
+                switch building {
+                case .error:
+                    Section {
                         Text("Unable to load building.")
                             .foregroundStyle(.red)
-                    case .loading:
-                        LabeledContent("Building") { ProgressView() }
-                    case .value(let building):
-                        buildingView(building)
                     }
+                case .loading:
+                    Section {
+                        LabeledContent("Building") { ProgressView() }
+                    }
+                case .value(let building):
+                    buildingView(building)
                 }
                 
                 if !images.isEmpty {
@@ -133,8 +135,17 @@ extension RoomView {
         }
         
         @ViewBuilder private func buildingView(_ building: Building) -> some View {
+            Section {
+                LabeledContent("Building", value: building.name)
+                LabeledContent("Short Name", value: building.shortName)
+                
+                if building.additionalName != building.name {
+                    LabeledContent("Additional Name", value: building.additionalName)
+                }
+            }
+            
             LabeledContent("Campus", value: building.campus)
-            LabeledContent("Building", value: building.academyBuilding)
+            LabeledContent("Academy Building", value: building.academyBuilding)
         }
     }
 }
