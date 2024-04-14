@@ -15,6 +15,7 @@ class Event: Decodable, ObservableObject {
     @Published var type: EventType
     @Published var name: String
     @Published var shortText: String
+    @Published var links: [Event.Link]?
     
     @Published var content: AttributedString?
     @Published var literature: AttributedString?
@@ -30,12 +31,13 @@ class Event: Decodable, ObservableObject {
     @Published var modules: [Event.Module]?
     @Published var instructors: [Instructor]
     
-    init(id: Int, number: Int, type: EventType, name: String, shortText: String, content: AttributedString? = nil, literature: AttributedString? = nil, comment: AttributedString? = nil, term: Term, weeklyHours: Double, members1: Int, members2: Int, credits: Int? = nil, groups: [Group], modules: [Event.Module]? = nil, instructors: [Instructor]) {
+    init(id: Int, number: Int, type: EventType, name: String, shortText: String, links: [Event.Link]?, content: AttributedString? = nil, literature: AttributedString? = nil, comment: AttributedString? = nil, term: Term, weeklyHours: Double, members1: Int, members2: Int, credits: Int? = nil, groups: [Group], modules: [Event.Module]? = nil, instructors: [Instructor]) {
         self.id = id
         self.number = number
         self.type = type
         self.name = name
         self.shortText = shortText
+        self.links = links
         self.content = content
         self.literature = literature
         self.comment = comment
@@ -57,6 +59,7 @@ class Event: Decodable, ObservableObject {
         self.type = try container.decode(Event.EventType.self, forKey: .type)
         self.name = try container.decode(String.self, forKey: .name)
         self.shortText = try container.decode(String.self, forKey: .shortText)
+        self.links = try container.decodeIfPresent([Event.Link].self, forKey: .links)
         
         self.content = try container.decode(String?.self, forKey: .content)?.parseFriedoLinHTML()
         self.literature = try container.decode(String?.self, forKey: .literature)?.parseFriedoLinHTML()
@@ -81,6 +84,7 @@ extension Event {
         case type
         case name
         case shortText
+        case links
         case content
         case literature
         case comment

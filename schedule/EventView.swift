@@ -94,6 +94,16 @@ struct EventView: View {
                 }
             }
             
+            if let links = event.links {
+                Section("Links") {
+                    ForEach(links) { link in
+                        if let url = URL(string: link.link) {
+                            Link(link.title, destination: url)
+                        }
+                    }
+                }
+            }
+            
             if let content = event.content {
                 Section("Content") {
                     Text(content)
