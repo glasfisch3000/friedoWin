@@ -45,7 +45,13 @@ struct RoomView: View {
     
     @ViewBuilder private func valueView(_ room: Room) -> some View {
         Form {
-            LabeledContent("Room", value: room.name)
+            Section {
+                LabeledContent("Room", value: room.name)
+                
+                if let url = room.friedoLinURL {
+                    Link("View on FriedoLin", destination: url)
+                }
+            }
             
             BuildingView(roomBuilding: room.building, building: $room.building(room.building.id))
             

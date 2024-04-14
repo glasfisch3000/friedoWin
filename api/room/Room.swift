@@ -37,3 +37,9 @@ class Room: Decodable, ObservableObject {
 }
 
 extension Room: Identifiable { }
+
+extension Room {
+    var friedoLinURL: URL? {
+        URL(string: "https://friedolin.uni-jena.de/qisserver/rds?state=verpublish&moduleCall=webInfo&publishConfFile=webInfoRaum&publishSubDir=raum&raum.rgid=\(id)")
+    }
+}
