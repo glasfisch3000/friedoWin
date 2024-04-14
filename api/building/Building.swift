@@ -11,9 +11,9 @@ class Building: Decodable, ObservableObject {
     var id: Int
     var campus: String
     var academyBuilding: String
-    var location: Location
+    var location: Location?
     
-    init(id: Int, campus: String, academyBuilding: String, location: Location) {
+    init(id: Int, campus: String, academyBuilding: String, location: Location?) {
         self.id = id
         self.campus = campus
         self.academyBuilding = academyBuilding

@@ -48,6 +48,10 @@ struct RoomView: View {
             LabeledContent("Room", value: room.name)
             
             BuildingView(roomBuilding: room.building, building: $room.building(room.building.id))
+            
+            if let imageID = room.image {
+                ImageView(image: roomImageFetchable(imageID))
+            }
         }
     }
 }
@@ -81,20 +85,54 @@ extension RoomView {
                 LabeledContent("Building", value: building.academyBuilding)
             }
             
-            Section {
-                Button {
-                    building.location.mapItem.openInMaps()
-                } label: {
-                    Map.init(initialPosition: building.location.cameraPosition) {
-                        Marker(roomBuilding.name, coordinate: building.location.coordinate)
-                            .tint(.red)
+            if let location = building.location {
+                Section {
+                    Button {
+                        location.mapItem.openInMaps()
+                    } label: {
+                        Map.init(initialPosition: location.cameraPosition) {
+                            Marker(roomBuilding.name, coordinate: location.coordinate)
+                                .tint(.red)
+                        }
+                        .mapStyle(.standard)
+                        .mapControlVisibility(.hidden)
+                        .frame(height: 250)
                     }
-                    .mapStyle(.standard)
-                    .mapControlVisibility(.hidden)
-                    .frame(height: 250)
+                    .buttonStyle(.plain)
+                    .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
                 }
-                .buttonStyle(.plain)
-                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+            }
+        }
+    }
+}
+
+extension RoomView {
+    struct ImageView: View {
+        @Fetchable<FriedoWin.Server, UIImage> var image: FetchableStatus<UIImage>
+        
+        var body: some View {
+            switch image {
+            case .error: errorView()
+            case .loading: loadingView()
+            case .value(let image): valueView(image)
+            }
+        }
+        
+        @ViewBuilder private func loadingView() -> some View {
+            LabeledContent("Image") {
+                ProgressView()
+            }
+        }
+        
+        @ViewBuilder private func errorView() -> some View {
+            Text("Unable to load image.")
+                .foregroundStyle(.red)
+        }
+        
+        @ViewBuilder private func valueView(_ image: UIImage) -> some View {
+            Section {
+                Image(uiImage: image)
+                    .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             }
         }
     }
