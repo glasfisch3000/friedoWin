@@ -136,12 +136,12 @@ struct MeetingView: View {
         Section {
             LabeledContent("Online", value: meeting.online ? "Yes" : "No")
             
-            if meeting.room.id != 0 {
+            if let room = meeting.room {
                 NavigationLink {
-                    RoomView(room: $event.room(meeting.room.id))
+                    RoomView(room: $event.room(room.id))
                 } label: {
                     LabeledContent("Room") {
-                        Text(meeting.room.name)
+                        Text(room.name)
                             .lineLimit(1)
                     }
                 }

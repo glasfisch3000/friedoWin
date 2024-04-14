@@ -9,7 +9,7 @@ import Foundation
 
 class Meeting: Decodable, ObservableObject {
     @Published var type: Event.EventType? = nil
-    @Published var room: Room
+    @Published var room: Room?
     @Published var online: Bool
     
     @Published var fromTime: Time?
@@ -23,7 +23,7 @@ class Meeting: Decodable, ObservableObject {
     
     @Published var remark: AttributedString?
     
-    init(type: Event.EventType? = nil, room: Room, online: Bool, fromTime: Time, timeOffset: TimeOffset? = nil, toTime: Time, frequency: Frequency, weekday: Int, fromDate: Meeting.Date, toDate: Meeting.Date, remark: AttributedString? = nil) {
+    init(type: Event.EventType? = nil, room: Room?, online: Bool, fromTime: Time, timeOffset: TimeOffset? = nil, toTime: Time, frequency: Frequency, weekday: Int, fromDate: Meeting.Date, toDate: Meeting.Date, remark: AttributedString? = nil) {
         self.type = type
         self.room = room
         self.online = online
@@ -41,7 +41,7 @@ class Meeting: Decodable, ObservableObject {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         self.type = try? container.decode(Event.EventType.self, forKey: .type)
-        self.room = try container.decode(Meeting.Room.self, forKey: .room)
+        self.room = try container.decode(Meeting.Room?.self, forKey: .room)
         self.online = try container.decode(Bool.self, forKey: .online)
         
         self.fromTime = try container.decode(Meeting.Time.self, forKey: .fromTime)
