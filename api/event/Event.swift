@@ -20,6 +20,7 @@ class Event: Decodable, ObservableObject {
     @Published var content: AttributedString?
     @Published var literature: AttributedString?
     @Published var comment: AttributedString?
+    @Published var prerequisites: AttributedString?
     
     @Published var term: Term
     @Published var weeklyHours: Double
@@ -31,7 +32,7 @@ class Event: Decodable, ObservableObject {
     @Published var modules: [Event.Module]?
     @Published var instructors: [Instructor]
     
-    init(id: Int, number: Int, type: EventType, name: String, shortText: String, links: [Event.Link]?, content: AttributedString? = nil, literature: AttributedString? = nil, comment: AttributedString? = nil, term: Term, weeklyHours: Double, members1: Int, members2: Int, credits: Int? = nil, groups: [Group], modules: [Event.Module]? = nil, instructors: [Instructor]) {
+    init(id: Int, number: Int, type: EventType, name: String, shortText: String, links: [Event.Link]?, content: AttributedString? = nil, literature: AttributedString? = nil, comment: AttributedString? = nil, prerequisites: AttributedString? = nil, term: Term, weeklyHours: Double, members1: Int, members2: Int, credits: Int? = nil, groups: [Group], modules: [Event.Module]? = nil, instructors: [Instructor]) {
         self.id = id
         self.number = number
         self.type = type
@@ -41,6 +42,7 @@ class Event: Decodable, ObservableObject {
         self.content = content
         self.literature = literature
         self.comment = comment
+        self.prerequisites = prerequisites
         self.term = term
         self.weeklyHours = weeklyHours
         self.members1 = members1
@@ -64,6 +66,7 @@ class Event: Decodable, ObservableObject {
         self.content = try container.decodeIfPresent(String.self, forKey: .content)?.parseFriedoLinHTML()
         self.literature = try container.decodeIfPresent(String.self, forKey: .literature)?.parseFriedoLinHTML()
         self.comment = try container.decodeIfPresent(String.self, forKey: .comment)?.parseFriedoLinHTML()
+        self.prerequisites = try container.decodeIfPresent(String.self, forKey: .prerequisites)?.parseFriedoLinHTML()
         
         self.term = try container.decode(Term.self, forKey: .term)
         self.weeklyHours = try container.decode(Double.self, forKey: .weeklyHours)
@@ -88,6 +91,7 @@ extension Event {
         case content
         case literature
         case comment
+        case prerequisites
         case term
         case weeklyHours
         case members1

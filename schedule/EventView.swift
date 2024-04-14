@@ -121,6 +121,12 @@ struct EventView: View {
                     Text(comment)
                 }
             }
+            
+            if let prerequisites = event.prerequisites {
+                Section("Prerequisites") {
+                    Text(prerequisites)
+                }
+            }
         }
     }
     
