@@ -45,7 +45,6 @@ struct ModuleView: View {
     @ViewBuilder private func valueView(_ module: Module) -> some View {
         Form {
             Section {
-                LabeledContent("ID", value: module.id, format: .number.grouping(.never))
                 LabeledContent("Name", value: module.name)
                 LabeledContent("Short Text", value: module.shortText)
                 
@@ -67,7 +66,7 @@ struct ModuleView: View {
             }
             
             if let learningObjectives = module.learningObjectives {
-                Section("Learning Outcomes") {
+                Section("Learning Objectives") {
                     Text(learningObjectives)
                 }
             }

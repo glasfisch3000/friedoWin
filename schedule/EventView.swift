@@ -87,7 +87,7 @@ struct EventView: View {
                         NavigationLink {
                             ModuleView(module: $event.module(module.id))
                         } label: {
-                            Text(module.name)
+                            Text("\(module.name) (\(module.shortText))")
                                 .lineLimit(1)
                         }
                     }
