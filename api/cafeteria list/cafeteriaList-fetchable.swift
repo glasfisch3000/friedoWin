@@ -40,7 +40,7 @@ extension [FriedoWin.Server] {
 //        
 //        for server in self {
 //            do {
-//                return try await server.sendRequest("cafeterias", as: [Cafeteria.ListItem].self)
+//                return try await server.sendAPIRequest("cafeterias", as: [Cafeteria.ListItem].self)
 //            } catch {
 //                print(error)
 //                continue
@@ -55,7 +55,7 @@ extension [FriedoWin.Server] {
         
         for server in self {
             do {
-                return try await server.sendRequest("cafeteria/\(id)", as: Cafeteria.ListItem.AdditionalInformation.self)
+                return try await server.sendAPIRequest("cafeteria/\(id)", as: Cafeteria.ListItem.AdditionalInformation.self)
             } catch {
                 print(error)
                 continue

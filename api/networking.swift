@@ -20,6 +20,35 @@ extension FriedoWin.Server {
     }
     
     func sendRequest<Query>(_ path: String, method: HTTPMethod = .GET, query: Query?, headers: [String: String] = [:]) async throws -> HTTPClient.Response where Query: Encodable {
+        var url = self.makeURLPrefix() + path
+        if let query = query {
+            url += "?"
+            url += try URLEncodedFormEncoder().encode(query)
+        }
+        
+        var request = try HTTPClient.Request(url: url, method: method)
+        for header in headers {
+            request.headers.add(name: header.key, value: header.value)
+        }
+        
+        let client = HTTPClient()
+        do {
+            let result = try await client.execute(request: request).get()
+            try? await client.shutdown()
+            return result
+        } catch {
+            try? await client.shutdown()
+            throw error
+        }
+    }
+}
+
+extension FriedoWin.Server {
+    func sendAPIRequest(_ path: String, method: HTTPMethod = .GET, headers: [String: String] = [:]) async throws -> HTTPClient.Response {
+        try await sendAPIRequest(path, method: method, query: String?.none, headers: headers)
+    }
+    
+    func sendAPIRequest<Query>(_ path: String, method: HTTPMethod = .GET, query: Query?, headers: [String: String] = [:]) async throws -> HTTPClient.Response where Query: Encodable {
         var url = self.makeURLPrefix() + "api/" + path
         if let query = query {
             url += "?"
@@ -73,6 +102,34 @@ extension FriedoWin.Server {
         guard response.status.mayHaveResponseBody else { throw RequestError.httpError(status: response.status) }
         
         guard let body = response.body else { throw RequestError.missingBody }
+        print(body.getString(at: body.readerIndex, length: body.readableBytes) ?? "")
+        return try JSONDecoder().decode(type, from: body)
+    }
+}
+
+extension FriedoWin.Server {
+    func sendAPIRequest<Result>(_ path: String, as type: Result.Type, method: HTTPMethod = .GET, headers: [String: String] = [:]) async throws -> Result where Result: Decodable {
+        try await sendAPIRequest(path, as: type, method: method, query: String?.none, headers: headers)
+    }
+    
+    func sendAPIRequest<Query, Result>(_ path: String, as type: Result.Type, method: HTTPMethod = .GET, query: Query?, headers: [String: String] = [:]) async throws -> Result where Query: Encodable, Result: Decodable {
+        let response = try await self.sendAPIRequest(path, method: method, query: query, headers: headers)
+        
+        if response.status == .unauthorized,
+            let body = response.body,
+            let errorMessage = body.getString(at: body.readerIndex, length: body.readableBytes), errorMessage == "loggedOut" {
+            throw RequestError.unauthorized
+        }
+        
+        if response.status == .badGateway,
+            let body = response.body,
+            let errorMessage = body.getString(at: body.readerIndex, length: body.readableBytes), errorMessage == "unavailable" {
+            throw RequestError.friedoLinDown
+        }
+        
+        guard response.status.mayHaveResponseBody else { throw RequestError.httpError(status: response.status) }
+        
+        guard let body = response.body else { throw RequestError.missingBody }
 //        print(body.getString(at: body.readerIndex, length: body.readableBytes) ?? "")
         return try JSONDecoder().decode(type, from: body)
     }
@@ -88,7 +145,7 @@ extension FriedoWin {
         
         for server in servers {
             do {
-                let authentication = try await server.sendRequest("login", as: AuthenticationResult.self, method: .POST, query: auth)
+                let authentication = try await server.sendAPIRequest("login", as: AuthenticationResult.self, method: .POST, query: auth)
                 return .init(servers: servers, token: authentication.session)
             } catch let error as Server.RequestError where error == .friedoLinDown {
                 print("friedoLin down")
@@ -118,7 +175,7 @@ extension FriedoWin {
         
         for server in self.servers {
             do {
-                return try await server.sendRequest(path, method: method, query: query, headers: ["Authorization": "Bearer \(self.token)"])
+                return try await server.sendAPIRequest(path, method: method, query: query, headers: ["Authorization": "Bearer \(self.token)"])
             } catch {
                 print(error)
                 continue
@@ -139,7 +196,7 @@ extension FriedoWin {
         
         for server in self.servers {
             do {
-                return try await server.sendRequest(path, as: type, method: method, query: query, headers: ["Authorization": "Bearer \(self.token)"])
+                return try await server.sendAPIRequest(path, as: type, method: method, query: query, headers: ["Authorization": "Bearer \(self.token)"])
             } catch let error as Server.RequestError where error == .friedoLinDown {
                 print("friedoLin down")
                 throw error
