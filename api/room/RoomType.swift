@@ -15,14 +15,13 @@ extension Room {
         case gym
         
         case dutyRoom
-        case meetingRoom_
+        case meetingRoom
         case otherRoom
         
         case outdoorFacility
         case swimmingPool
         case sportsRoom
         case courseRoom
-        
         
         case treatmentRoom
         case divers
@@ -44,7 +43,7 @@ extension Room.RoomType: CustomStringConvertible {
         case .readingRoom: "Reading Room"
         case .gym: "Gym"
         case .dutyRoom: "Duty Room"
-        case .meetingRoom_: "Meeting Room_"
+        case .meetingRoom: "Meeting Room"
         case .otherRoom: "Other Room"
         case .outdoorFacility: "Outdoor Facility"
         case .swimmingPool: "Swimming Pool"
