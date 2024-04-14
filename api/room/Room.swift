@@ -11,20 +11,20 @@ class Room: Decodable, ObservableObject {
     var id: Int
     var name: String
     var building: Room.Building
-    var image: Int?
+    var images: [Int]?
     
-    init(id: Int, name: String, building: Room.Building, image: Int?) {
+    init(id: Int, name: String, building: Room.Building, images: [Int]?) {
         self.id = id
         self.name = name
         self.building = building
-        self.image = image
+        self.images = images
     }
     
     enum CodingKeys: CodingKey {
         case id
         case name
         case building
-        case image
+        case images
     }
     
     required init(from decoder: Decoder) throws {
@@ -32,7 +32,7 @@ class Room: Decodable, ObservableObject {
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.building = try container.decode(Room.Building.self, forKey: .building)
-        self.image = try? container.decodeIfPresent(Int.self, forKey: .image)
+        self.images = try? container.decodeIfPresent([Int].self, forKey: .images)
     }
 }
 

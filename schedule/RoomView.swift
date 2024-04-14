@@ -16,11 +16,8 @@ struct RoomView: View {
             switch room {
             case .error: errorView()
             case .loading: loadingView()
-            case .value(let room): valueView(room)
+            case .value(let room): ResolvedView(room, api: $room) { await _room.loadValue() }
             }
-        }
-        .refreshable {
-            await _room.loadValue()
         }
         .navigationTitle("Room Info")
         .navigationBarTitleDisplayMode(.inline)
@@ -29,6 +26,9 @@ struct RoomView: View {
     @ViewBuilder private func loadingView() -> some View {
         ScrollView {
             ProgressView()
+        }
+        .refreshable {
+            await _room.loadValue()
         }
     }
     
@@ -41,73 +41,92 @@ struct RoomView: View {
                 Text("Unable to load event.")
             }
         }
-    }
-    
-    @ViewBuilder private func valueView(_ room: Room) -> some View {
-        Form {
-            Section {
-                LabeledContent("Room", value: room.name)
-                
-                if let url = room.friedoLinURL {
-                    Link("View on FriedoLin", destination: url)
-                }
-            }
-            
-            BuildingView(roomBuilding: room.building, building: $room.building(room.building.id))
-            
-            if let imageID = room.image {
-                ImageView(image: roomImageFetchable(imageID))
-            }
+        .refreshable {
+            await _room.loadValue()
         }
     }
 }
 
 extension RoomView {
-    struct BuildingView: View {
-        var roomBuilding: Room.Building
-        @APIFetchable var building: FetchableStatus<Building>
+    private struct ResolvedView: View {
+        var room: Room
+        
+        var api: FriedoWin
+        var refresh: () async -> ()
+        
+        init(_ room: Room, api: FriedoWin, refresh: @escaping () async -> Void) {
+            self.room = room
+            self.api = api
+            self.refresh = refresh
+            
+            _building = api.building(room.building.id)
+            images = room.images?.map { roomImageFetchable($0) } ?? []
+        }
+        
+        @APIFetchable private var building: FetchableStatus<Building>
+        private var images: [Fetchable<FriedoWin.Server, UIImage>]
         
         var body: some View {
-            switch building {
-            case .error: errorView()
-            case .loading: loadingView()
-            case .value(let building): valueView(building)
-            }
-        }
-        
-        @ViewBuilder private func loadingView() -> some View {
-            LabeledContent("Building") {
-                ProgressView()
-            }
-        }
-        
-        @ViewBuilder private func errorView() -> some View {
-            LabeledContent("Building", value: roomBuilding.name)
-        }
-        
-        @ViewBuilder private func valueView(_ building: Building) -> some View {
-            Section {
-                LabeledContent("Campus", value: building.campus)
-                LabeledContent("Building", value: building.academyBuilding)
-            }
-            
-            if let location = building.location {
+            Form {
                 Section {
-                    Button {
-                        location.mapItem.openInMaps()
-                    } label: {
-                        Map.init(initialPosition: location.cameraPosition) {
-                            Marker(roomBuilding.name, coordinate: location.coordinate)
-                                .tint(.red)
-                        }
-                        .mapStyle(.standard)
-                        .mapControlVisibility(.hidden)
-                        .frame(height: 250)
+                    LabeledContent("Room", value: room.name)
+                    
+                    if let url = room.friedoLinURL {
+                        Link("View on FriedoLin", destination: url)
                     }
-                    .buttonStyle(.plain)
-                    .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                }
+                
+                Section {
+                    switch building {
+                    case .error:
+                        LabeledContent("Building", value: room.building.name)
+                    case .loading:
+                        LabeledContent("Building") { ProgressView() }
+                    case .value(let building):
+                        buildingView(building)
+                    }
+                }
+                
+                if !images.isEmpty {
+                    Section("Images") {
+                        ForEach(images) { fetchable in
+                            ImageView(image: fetchable)
+                        }
+                    }
+                }
+                
+                if let location = building.value?.location {
+                    Section("Location") {
+                        Button {
+                            location.mapItem.openInMaps()
+                        } label: {
+                            Map.init(initialPosition: location.cameraPosition, interactionModes: [.zoom, .rotate, .pitch]) {
+                                Marker(room.building.name, coordinate: location.coordinate)
+                                    .tint(.red)
+                            }
+                            .mapStyle(.standard)
+                            .mapControlVisibility(.hidden)
+                            .frame(height: 200)
+                        }
+                        .buttonStyle(.plain)
+                        .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
+                    }
                 }
             }
+            .refreshable {
+                await refresh()
+                
+                _building.refresh()
+                
+                for image in images {
+                    image.refresh()
+                }
+            }
+        }
+        
+        @ViewBuilder private func buildingView(_ building: Building) -> some View {
+            LabeledContent("Campus", value: building.campus)
+            LabeledContent("Building", value: building.academyBuilding)
         }
     }
 }
@@ -125,9 +144,7 @@ extension RoomView {
         }
         
         @ViewBuilder private func loadingView() -> some View {
-            LabeledContent("Image") {
-                ProgressView()
-            }
+            LabeledContent("Image") { ProgressView() }
         }
         
         @ViewBuilder private func errorView() -> some View {
@@ -136,10 +153,8 @@ extension RoomView {
         }
         
         @ViewBuilder private func valueView(_ image: UIImage) -> some View {
-            Section {
-                Image(uiImage: image)
-                    .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
-            }
+            Image(uiImage: image)
+                .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
         }
     }
 }
