@@ -119,8 +119,7 @@ struct MeetingView: View {
                 }
             }
             
-            LabeledContent("Day", value: Calendar.autoupdatingCurrent.weekdaySymbols[meeting.weekday])
-            LabeledContent("Frequency", value: meeting.frequency.description)
+            LabeledContent("Day", value: Calendar.autoupdatingCurrent.weekdaySymbols[meeting.weekday] + ", " + meeting.frequency.description)
             
             if let startDate = meeting.fromDate.asDate(), let endDate = meeting.toDate.asDate() {
                 LabeledContent("Duration") {
