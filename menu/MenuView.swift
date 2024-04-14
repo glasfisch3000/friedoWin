@@ -68,7 +68,9 @@ struct MenuView: View {
     
     @ViewBuilder private func valueView(_ menu: FoodMenu) -> some View {
         if menu.isEmpty {
-            Text("No menu available.")
+            ScrollView {
+                Text("No menu available.")
+            }
         } else {
             Picker(selection: $selection) {
                 ForEach(menu.keys.sorted()) { time in
