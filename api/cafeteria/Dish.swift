@@ -35,7 +35,7 @@ class Dish: Decodable, ObservableObject {
         self.studentPrice = try container.decode(Dish.Price.self, forKey: .studentPrice)
         self.employeePrice = try container.decode(Dish.Price.self, forKey: .employeePrice)
         self.guestPrice = try container.decode(Dish.Price.self, forKey: .guestPrice)
-        self.ingredients = try container.decode([Food]?.self, forKey: .ingredients)
+        self.ingredients = try container.decodeIfPresent([Food].self, forKey: .ingredients)
     }
 }
 

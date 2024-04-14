@@ -17,21 +17,6 @@ class Cafeteria: Decodable, ObservableObject {
         self.name = name
         self.meals = meals
     }
-    
-    required init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decode(Int.self, forKey: .id)
-        self.name = try container.decode(String.self, forKey: .name)
-        self.meals = try container.decode([Meal].self, forKey: .meals)
-    }
-}
-
-extension Cafeteria {
-    enum CodingKeys: CodingKey {
-        case id
-        case name
-        case meals
-    }
 }
 
 extension Cafeteria: Identifiable { }

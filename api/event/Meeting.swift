@@ -41,11 +41,11 @@ class Meeting: Decodable, ObservableObject {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
         self.type = try? container.decode(Event.EventType.self, forKey: .type)
-        self.room = try container.decode(Meeting.Room?.self, forKey: .room)
+        self.room = try container.decodeIfPresent(Meeting.Room.self, forKey: .room)
         self.online = try container.decode(Bool.self, forKey: .online)
         
         self.fromTime = try container.decode(Meeting.Time.self, forKey: .fromTime)
-        self.timeOffset = try container.decode(Meeting.TimeOffset?.self, forKey: .timeOffset)
+        self.timeOffset = try container.decodeIfPresent(Meeting.TimeOffset.self, forKey: .timeOffset)
         self.toTime = try container.decode(Meeting.Time.self, forKey: .toTime)
         
         self.frequency = try container.decode(Frequency.self, forKey: .frequency)
@@ -53,7 +53,7 @@ class Meeting: Decodable, ObservableObject {
         self.fromDate = try container.decode(Meeting.Date.self, forKey: .fromDate)
         self.toDate = try container.decode(Meeting.Date.self, forKey: .toDate)
         
-        self.remark = try container.decode(String?.self, forKey: .remark)?.parseFriedoLinHTML()
+        self.remark = try container.decodeIfPresent(String.self, forKey: .remark)?.parseFriedoLinHTML()
     }
 }
 
@@ -120,28 +120,30 @@ extension Meeting: Identifiable { }
 extension Meeting: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(self.type)
-        hasher.combine(self.remark)
         hasher.combine(self.room)
         hasher.combine(self.online)
         hasher.combine(self.fromTime)
+        hasher.combine(self.timeOffset)
         hasher.combine(self.toTime)
         hasher.combine(self.frequency)
         hasher.combine(self.weekday)
         hasher.combine(self.fromDate)
         hasher.combine(self.toDate)
+        hasher.combine(self.remark)
     }
     
     static func == (lhs: Meeting, rhs: Meeting) -> Bool {
         guard lhs.type == rhs.type else { return false }
-        guard lhs.remark == rhs.remark else { return false }
         guard lhs.room == rhs.room else { return false }
         guard lhs.online == rhs.online else { return false }
         guard lhs.fromTime == rhs.fromTime else { return false }
+        guard lhs.timeOffset == rhs.timeOffset else { return false }
         guard lhs.toTime == rhs.toTime else { return false }
         guard lhs.frequency == rhs.frequency else { return false }
         guard lhs.weekday == rhs.weekday else { return false }
         guard lhs.fromDate == rhs.fromDate else { return false }
         guard lhs.toDate == rhs.toDate else { return false }
+        guard lhs.remark == rhs.remark else { return false }
         return true
     }
 }

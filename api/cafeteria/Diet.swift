@@ -16,6 +16,7 @@ extension Diet: Hashable { }
 extension Diet: Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
+        
         self.rawValue = try container.decode(RawValue.self)
     }
 }

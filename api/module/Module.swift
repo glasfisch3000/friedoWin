@@ -32,6 +32,7 @@ class Module: Decodable, ObservableObject {
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        
         self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.shortText = try container.decode(String.self, forKey: .shortText)
@@ -40,8 +41,8 @@ class Module: Decodable, ObservableObject {
         self.workloadPrivate = try container.decode(Int.self, forKey: .workloadPrivate)
         self.workloadClass = try container.decode(Int.self, forKey: .workloadClass)
         
-        self.content = try container.decode(String?.self, forKey: .content)?.parseFriedoLinHTML()
-        self.learningObjectives = try container.decode(String?.self, forKey: .learningObjectives)?.parseFriedoLinHTML()
+        self.content = try container.decodeIfPresent(String.self, forKey: .content)?.parseFriedoLinHTML()
+        self.learningObjectives = try container.decodeIfPresent(String.self, forKey: .learningObjectives)?.parseFriedoLinHTML()
     }
 }
 

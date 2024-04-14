@@ -18,7 +18,8 @@ class Meal: Decodable, ObservableObject {
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.time = try? container.decode(Meal.Time.self, forKey: .time)
+        
+        self.time = try container.decodeIfPresent(Meal.Time.self, forKey: .time)
         self.dishes = try container.decode([Dish].self, forKey: .dishes)
     }
 }

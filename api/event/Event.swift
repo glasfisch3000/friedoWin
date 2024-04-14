@@ -61,18 +61,18 @@ class Event: Decodable, ObservableObject {
         self.shortText = try container.decode(String.self, forKey: .shortText)
         self.links = try container.decodeIfPresent([Event.Link].self, forKey: .links)
         
-        self.content = try container.decode(String?.self, forKey: .content)?.parseFriedoLinHTML()
-        self.literature = try container.decode(String?.self, forKey: .literature)?.parseFriedoLinHTML()
-        self.comment = try container.decode(String?.self, forKey: .comment)?.parseFriedoLinHTML()
+        self.content = try container.decodeIfPresent(String.self, forKey: .content)?.parseFriedoLinHTML()
+        self.literature = try container.decodeIfPresent(String.self, forKey: .literature)?.parseFriedoLinHTML()
+        self.comment = try container.decodeIfPresent(String.self, forKey: .comment)?.parseFriedoLinHTML()
         
         self.term = try container.decode(Term.self, forKey: .term)
         self.weeklyHours = try container.decode(Double.self, forKey: .weeklyHours)
         self.members1 = try container.decode(Int.self, forKey: .members1)
         self.members2 = try container.decode(Int.self, forKey: .members2)
-        self.credits = try container.decode(Int?.self, forKey: .credits)
+        self.credits = try container.decodeIfPresent(Int.self, forKey: .credits)
         
         self.groups = try container.decode([Event.Group].self, forKey: .groups)
-        self.modules = try container.decode([Event.Module]?.self, forKey: .modules)
+        self.modules = try container.decodeIfPresent([Event.Module].self, forKey: .modules)
         self.instructors = try container.decode([Instructor].self, forKey: .instructors)
     }
 }

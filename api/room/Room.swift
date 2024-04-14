@@ -39,7 +39,7 @@ class Room: Decodable, ObservableObject {
         self.additionalName = try container.decode(String.self, forKey: .additionalName)
         
         self.building = try container.decode(Room.Building.self, forKey: .building)
-        self.images = try? container.decodeIfPresent([Int].self, forKey: .images)
+        self.images = try container.decodeIfPresent([Int].self, forKey: .images)
     }
 }
 

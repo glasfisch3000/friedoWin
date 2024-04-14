@@ -24,6 +24,7 @@ extension Food: Decodable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        
         self.name = Self.formatName(try container.decode(String.self, forKey: .name))
         self.description = Self.formatDescription(try container.decode(String.self, forKey: .description))
         self.diet = try container.decode(Diet.self, forKey: .diet)
