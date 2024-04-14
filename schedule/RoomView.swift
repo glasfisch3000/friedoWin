@@ -69,7 +69,14 @@ extension RoomView {
         var body: some View {
             Form {
                 Section {
-                    LabeledContent("Room", value: room.name)
+                    LabeledContent("Name", value: "\(room.name) (\(room.building.name))")
+                    LabeledContent("Short Name", value: room.shortName)
+                    
+                    if room.additionalName != room.name {
+                        LabeledContent("Additional Name", value: room.additionalName)
+                    }
+                    
+                    LabeledContent("Room Type", value: room.type.description)
                     
                     if let url = room.friedoLinURL {
                         Link("View on FriedoLin", destination: url)
@@ -79,7 +86,8 @@ extension RoomView {
                 Section {
                     switch building {
                     case .error:
-                        LabeledContent("Building", value: room.building.name)
+                        Text("Unable to load building.")
+                            .foregroundStyle(.red)
                     case .loading:
                         LabeledContent("Building") { ProgressView() }
                     case .value(let building):
