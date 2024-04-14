@@ -40,7 +40,6 @@ struct EventView: View {
                     LabeledContent("Short Text", value: event.shortText)
                 }
                 
-//                LabeledContent("ID", value: event.id, format: .number.grouping(.never))
                 LabeledContent("Number", value: event.number, format: .number.grouping(.never))
                 
                 if let url = event.friedoLinURL {
