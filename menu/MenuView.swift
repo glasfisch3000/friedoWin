@@ -67,23 +67,27 @@ struct MenuView: View {
     }
     
     @ViewBuilder private func valueView(_ menu: FoodMenu) -> some View {
-        Picker(selection: $selection) {
-            ForEach(menu.keys.sorted()) { time in
-                Text(time.description)
-            }
-        } label: { }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-        
-        List {
-            Picker("Show Price", selection: $priceSelection) {
-                Text("Student").tag(Dish.Price.PriceType.student)
-                Text("Employee").tag(Dish.Price.PriceType.employee)
-                Text("Guest").tag(Dish.Price.PriceType.guest)
-            }
+        if menu.isEmpty {
+            Text("No menu available.")
+        } else {
+            Picker(selection: $selection) {
+                ForEach(menu.keys.sorted()) { time in
+                    Text(time.description)
+                }
+            } label: { }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
             
-            timeView(selection, entries: menu[selection] ?? [:])
-                .listRowSeparatorTint(.secondary.opacity(0.5))
+            List {
+                Picker("Show Price", selection: $priceSelection) {
+                    Text("Student").tag(Dish.Price.PriceType.student)
+                    Text("Employee").tag(Dish.Price.PriceType.employee)
+                    Text("Guest").tag(Dish.Price.PriceType.guest)
+                }
+                
+                timeView(selection, entries: menu[selection] ?? [:])
+                    .listRowSeparatorTint(.secondary.opacity(0.5))
+            }
         }
     }
     
