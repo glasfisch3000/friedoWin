@@ -162,8 +162,13 @@ extension RoomView {
                 }
             }
             
-            LabeledContent("Campus", value: building.campus)
-            LabeledContent("Academy Building", value: building.academyBuilding)
+            if let campus = building.campus {
+                LabeledContent("Campus", value: campus)
+            }
+            
+            if let academyBuilding = building.academyBuilding {
+                LabeledContent("Academy Building", value: academyBuilding)
+            }
         }
     }
 }
