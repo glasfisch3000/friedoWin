@@ -101,7 +101,7 @@ struct EventGroupsView: View {
                 return $0.weekday < $1.weekday
             }) { meeting in
                 NavigationLink {
-                    MeetingView(event: self._event, group: group, meeting: meeting, colorHash: colorHash, simple: true)
+                    MeetingView(event: self._event, meeting: meeting, colorHash: colorHash, simple: true)
                 } label: {
                     if let date = meeting.fromDate.asDate() {
                         LabeledContent(meeting.type?.description ?? "Meeting", value: date, format: Date.FormatStyle(date: .numeric))
