@@ -69,14 +69,22 @@ extension RoomView {
         var body: some View {
             Form {
                 Section {
-                    LabeledContent("Name", value: room.name)
-                    LabeledContent("Short Name", value: room.shortName)
-                    
-                    if room.additionalName != room.name {
-                        LabeledContent("Additional Name", value: room.additionalName)
+                    LabeledContent {
+                        Text(room.shortName)
+                    } label: {
+                        VStack(alignment: .leading) {
+                            Text(room.name)
+                            
+                            Group {
+                                if room.additionalName != room.name {
+                                    Text(room.additionalName)
+                                }
+                                
+                                Text(room.type.description)
+                            }
+                            .font(.caption)
+                        }
                     }
-                    
-                    LabeledContent("Room Type", value: room.type.description)
                     
                     if let url = room.friedoLinURL {
                         Link("View on FriedoLin", destination: url)

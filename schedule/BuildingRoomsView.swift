@@ -12,15 +12,17 @@ struct BuildingRoomsView: View {
     
     var body: some View {
         List(rooms) { room in
-            Section {
-                LabeledContent("Name", value: room.name)
-                LabeledContent("Short Name", value: room.shortName)
-                
-                if room.additionalName != room.name {
-                    LabeledContent("Additional Name", value: room.additionalName)
+            LabeledContent {
+                Text(room.shortName)
+            } label: {
+                VStack(alignment: .leading) {
+                    Text(room.name)
+                    
+                    if room.additionalName != room.name {
+                        Text(room.additionalName)
+                            .font(.caption)
+                    }
                 }
-            } header: {
-                Text("Room ") + Text(room.id, format: .number.grouping(.never))
             }
         }
         .navigationTitle("Building Rooms Info")

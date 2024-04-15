@@ -12,14 +12,12 @@ struct InstructorsView: View {
     
     var body: some View {
         List(instructors) { instructor in
-            Section {
-                LabeledContent("Name", value: instructor.name)
+            VStack(alignment: .leading) {
+                Text(instructor.name)
                 
                 if let responsibility = instructor.responsibility {
-                    LabeledContent("Type", value: responsibility.description)
+                    Text(responsibility.description)
                 }
-            } header: {
-                Text("ID ") + Text(instructor.id, format: .number.grouping(.never))
             }
         }
         .navigationTitle("Event Instructors Info")
