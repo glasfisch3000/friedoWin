@@ -16,7 +16,23 @@ class Instructor: Decodable, ObservableObject {
     
     @Published var id: Int
     @Published var name: String
-    @Published var responsibility: Responsibility
+    @Published var responsibility: Responsibility?
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.responsibility = try container.decodeIfPresent(Instructor.Responsibility.self, forKey: .responsibility) // omitempty
+    }
+}
+
+extension Instructor {
+    enum CodingKeys: CodingKey {
+        case id
+        case name
+        case responsibility
+    }
 }
 
 extension Instructor: Identifiable { }

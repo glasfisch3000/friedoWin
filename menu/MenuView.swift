@@ -61,7 +61,7 @@ struct MenuView: View {
                 Image(systemName: "exclamationmark.arrow.triangle.2.circlepath")
                     .font(.title)
                 
-                Text("Unable to load cafeteria.")
+                Text("Unable to load menu.")
             }
         }
     }

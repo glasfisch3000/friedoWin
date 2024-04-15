@@ -14,7 +14,10 @@ struct InstructorsView: View {
         List(instructors) { instructor in
             Section {
                 LabeledContent("Name", value: instructor.name)
-                LabeledContent("Type", value: instructor.responsibility.description)
+                
+                if let responsibility = instructor.responsibility {
+                    LabeledContent("Type", value: responsibility.description)
+                }
             } header: {
                 Text("ID ") + Text(instructor.id, format: .number.grouping(.never))
             }

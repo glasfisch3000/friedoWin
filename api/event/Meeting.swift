@@ -8,7 +8,7 @@
 import Foundation
 
 class Meeting: Decodable, ObservableObject {
-    @Published var type: Event.EventType? = nil
+    @Published var type: Event.EventType?
     @Published var room: Room?
     @Published var online: Bool
     
@@ -26,7 +26,7 @@ class Meeting: Decodable, ObservableObject {
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.type = try container.decodeIfPresent(Event.EventType.self, forKey: .type)
+        self.type = try container.decodeIfPresent(Event.EventType.self, forKey: .type) // omitempty
         self.room = try container.decodeIfPresent(Meeting.Room.self, forKey: .room)
         self.online = try container.decode(Bool.self, forKey: .online)
         
