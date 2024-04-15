@@ -65,9 +65,21 @@ struct ModuleView: View {
                 }
             }
             
+            if let literature = module.literature {
+                Section("Literature") {
+                    Text(literature)
+                }
+            }
+            
             if let learningObjectives = module.learningObjectives {
                 Section("Learning Objectives") {
                     Text(learningObjectives)
+                }
+            }
+            
+            if let examPrerequisites = module.examPrerequisites {
+                Section("Exam Prerequisites") {
+                    Text(examPrerequisites)
                 }
             }
         }

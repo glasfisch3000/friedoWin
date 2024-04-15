@@ -17,7 +17,9 @@ class Module: Decodable, ObservableObject {
     @Published var workloadClass: Int
 
     @Published var content: AttributedString?
+    @Published var literature: AttributedString?
     @Published var learningObjectives: AttributedString?
+    @Published var examPrerequisites: AttributedString?
     
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -31,7 +33,9 @@ class Module: Decodable, ObservableObject {
         self.workloadClass = try container.decode(Int.self, forKey: .workloadClass)
         
         self.content = try container.decodeIfPresent(String.self, forKey: .content)?.parseFriedoLinHTML()
+        self.literature = try container.decodeIfPresent(String.self, forKey: .literature)?.parseFriedoLinHTML()
         self.learningObjectives = try container.decodeIfPresent(String.self, forKey: .learningObjectives)?.parseFriedoLinHTML()
+        self.examPrerequisites = try container.decodeIfPresent(String.self, forKey: .examPrerequisites)?.parseFriedoLinHTML()
     }
 }
 
@@ -44,7 +48,9 @@ extension Module {
         case workloadPrivate
         case workloadClass
         case content
+        case literature
         case learningObjectives
+        case examPrerequisites
     }
 }
 
@@ -52,25 +58,11 @@ extension Module: Identifiable { }
 
 extension Module: Hashable {
     static func == (lhs: Module, rhs: Module) -> Bool {
-        lhs.id == rhs.id &&
-        lhs.name == rhs.name &&
-        lhs.shortText == rhs.shortText &&
-        lhs.credits == rhs.credits &&
-        lhs.workloadPrivate == rhs.workloadPrivate &&
-        lhs.workloadClass == rhs.workloadClass &&
-        lhs.content == rhs.content &&
-        lhs.learningObjectives == rhs.learningObjectives
+        lhs.id == rhs.id
     }
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
-        hasher.combine(name)
-        hasher.combine(shortText)
-        hasher.combine(credits)
-        hasher.combine(workloadPrivate)
-        hasher.combine(workloadClass)
-        hasher.combine(content)
-        hasher.combine(learningObjectives)
     }
 }
 
