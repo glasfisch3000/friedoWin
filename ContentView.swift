@@ -60,10 +60,6 @@ struct ContentView: View {
         .onAppear(perform: self.tryReauthenticate)
     }
     
-    @ViewBuilder private func authenticatedView(api: FriedoWin) -> some View {
-        FriedoWinView(api: api)
-    }
-    
     @ViewBuilder private func loginView() -> some View {
         Form {
             VStack(spacing: 20) {
