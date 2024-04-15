@@ -14,3 +14,12 @@ extension Meeting {
 
 extension Meeting.TimeOffset: Hashable { }
 extension Meeting.TimeOffset: Decodable { }
+
+extension Meeting.TimeOffset: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .none: "No Offset"
+        case .ct: "Cum Tempore (15min)"
+        }
+    }
+}

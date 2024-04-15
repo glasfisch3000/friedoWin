@@ -119,6 +119,10 @@ struct MeetingView: View {
                 }
             }
             
+            if let offset = meeting.timeOffset {
+                LabeledContent("Time Offset", value: offset.description)
+            }
+            
             LabeledContent("Day", value: Calendar.autoupdatingCurrent.weekdaySymbols[meeting.weekday] + ", " + meeting.frequency.description)
             
             if let startDate = meeting.fromDate.asDate(), let endDate = meeting.toDate.asDate() {
