@@ -7,6 +7,7 @@
 
 import Foundation
 
+@dynamicMemberLookup
 enum FetchableStatus<Value> {
     case error
     case loading
@@ -16,6 +17,14 @@ enum FetchableStatus<Value> {
         switch self {
         case .value(let value): return value
         default: return nil
+        }
+    }
+    
+    subscript<Member>(dynamicMember keyPath: KeyPath<Value, Member>) -> FetchableStatus<Member> {
+        switch self {
+        case .error: .error
+        case .loading: .loading
+        case .value(let value): .value(value[keyPath: keyPath])
         }
     }
 }
