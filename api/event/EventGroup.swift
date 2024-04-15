@@ -13,11 +13,6 @@ extension Event {
         
         @Published var number: Int?
         @Published var meetings: [Meeting]
-        
-        init(number: Int?, meetings: [Meeting]) {
-            self.number = number
-            self.meetings = meetings
-        }
     }
 }
 

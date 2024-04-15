@@ -19,17 +19,6 @@ class Module: Decodable, ObservableObject {
     @Published var content: AttributedString?
     @Published var learningObjectives: AttributedString?
     
-    init(id: Int, name: String, shortText: String, credits: Int, workloadPrivate: Int, workloadClass: Int, content: AttributedString? = nil, learningObjectives: AttributedString? = nil) {
-        self.id = id
-        self.name = name
-        self.shortText = shortText
-        self.credits = credits
-        self.workloadPrivate = workloadPrivate
-        self.workloadClass = workloadClass
-        self.content = content
-        self.learningObjectives = learningObjectives
-    }
-    
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         

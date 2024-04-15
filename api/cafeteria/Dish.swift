@@ -16,14 +16,6 @@ class Dish: Decodable, ObservableObject {
     
     @Published var ingredients: [Food]?
     
-    init(food: Food, studentPrice: Dish.Price, employeePrice: Dish.Price, guestPrice: Dish.Price, ingredients: [Food]?) {
-        self.food = food
-        self.studentPrice = studentPrice
-        self.employeePrice = employeePrice
-        self.guestPrice = guestPrice
-        self.ingredients = ingredients
-    }
-    
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         

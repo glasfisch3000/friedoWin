@@ -17,16 +17,6 @@ class Building: Decodable, ObservableObject {
     var campus: String
     var academyBuilding: String
     var location: Location?
-    
-    init(id: Int, name: String, shortName: String, additionalName: String, campus: String, academyBuilding: String, location: Location? = nil) {
-        self.id = id
-        self.name = name
-        self.shortName = shortName
-        self.additionalName = additionalName
-        self.campus = campus
-        self.academyBuilding = academyBuilding
-        self.location = location
-    }
 }
 
 extension Building: Identifiable { }

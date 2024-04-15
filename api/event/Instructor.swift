@@ -17,12 +17,6 @@ class Instructor: Decodable, ObservableObject {
     @Published var id: Int
     @Published var name: String
     @Published var responsibility: Responsibility
-    
-    init(id: Int, name: String, responsibility: Responsibility) {
-        self.id = id
-        self.name = name
-        self.responsibility = responsibility
-    }
 }
 
 extension Instructor: Identifiable { }

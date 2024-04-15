@@ -23,24 +23,10 @@ class Meeting: Decodable, ObservableObject {
     
     @Published var remark: AttributedString?
     
-    init(type: Event.EventType? = nil, room: Room?, online: Bool, fromTime: Time, timeOffset: TimeOffset? = nil, toTime: Time, frequency: Frequency, weekday: Int, fromDate: Meeting.Date, toDate: Meeting.Date, remark: AttributedString? = nil) {
-        self.type = type
-        self.room = room
-        self.online = online
-        self.fromTime = fromTime
-        self.timeOffset = timeOffset
-        self.toTime = toTime
-        self.frequency = frequency
-        self.weekday = weekday
-        self.fromDate = fromDate
-        self.toDate = toDate
-        self.remark = remark
-    }
-    
     required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        self.type = try? container.decode(Event.EventType.self, forKey: .type)
+        self.type = try container.decodeIfPresent(Event.EventType.self, forKey: .type)
         self.room = try container.decodeIfPresent(Meeting.Room.self, forKey: .room)
         self.online = try container.decode(Bool.self, forKey: .online)
         
