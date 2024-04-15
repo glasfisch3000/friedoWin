@@ -18,11 +18,17 @@ extension FriedoWin.Servers {
                 let cafeteria = item.construct(with: additional)
                 
                 for meal in cafeteria.meals {
-                    let time = meal.time ?? .noon
-                    
-                    var entry = menu[time] ?? [:]
-                    entry[cafeteria] = meal.dishes
-                    menu[time] = entry
+                    if let time = meal.time {
+                        var entry = menu[time] ?? [:]
+                        entry[cafeteria] = meal.dishes
+                        menu[time] = entry
+                    } else {
+                        for time in [Meal.Time.noon, .afternoon, .evening] {
+                            var entry = menu[time] ?? [:]
+                            entry[cafeteria] = meal.dishes
+                            menu[time] = entry
+                        }
+                    }
                 }
             }
             
