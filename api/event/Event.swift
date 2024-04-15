@@ -28,11 +28,11 @@ class Event: Decodable, ObservableObject {
     @Published var members2: Int
     @Published var credits: Int?
     
-    @Published var groups: [Group]
+    @Published var groups: [Group]?
     @Published var modules: [Event.Module]?
-    @Published var instructors: [Instructor]
+    @Published var instructors: [Instructor]?
     
-    init(id: Int, number: Int, type: EventType, name: String, shortText: String, links: [Event.Link]?, content: AttributedString? = nil, literature: AttributedString? = nil, comment: AttributedString? = nil, prerequisites: AttributedString? = nil, term: Term, weeklyHours: Double, members1: Int, members2: Int, credits: Int? = nil, groups: [Group], modules: [Event.Module]? = nil, instructors: [Instructor]) {
+    init(id: Int, number: Int, type: EventType, name: String, shortText: String, links: [Event.Link]?, content: AttributedString? = nil, literature: AttributedString? = nil, comment: AttributedString? = nil, prerequisites: AttributedString? = nil, term: Term, weeklyHours: Double, members1: Int, members2: Int, credits: Int? = nil, groups: [Group]? = nil, modules: [Event.Module]? = nil, instructors: [Instructor]? = nil) {
         self.id = id
         self.number = number
         self.type = type
@@ -74,9 +74,9 @@ class Event: Decodable, ObservableObject {
         self.members2 = try container.decode(Int.self, forKey: .members2)
         self.credits = try container.decodeIfPresent(Int.self, forKey: .credits)
         
-        self.groups = try container.decode([Event.Group].self, forKey: .groups)
+        self.groups = try container.decodeIfPresent([Event.Group].self, forKey: .groups)
         self.modules = try container.decodeIfPresent([Event.Module].self, forKey: .modules)
-        self.instructors = try container.decode([Instructor].self, forKey: .instructors)
+        self.instructors = try container.decodeIfPresent([Instructor].self, forKey: .instructors)
     }
 }
 
@@ -107,7 +107,7 @@ extension Event: Identifiable { }
 
 extension Event {
     var firstOccurrence: WeekdayTime? {
-        self.groups.flatMap(\.meetings).reduce(nil) { result, meeting in
+        self.groups?.flatMap(\.meetings).reduce(nil) { result, meeting in
             guard let occurrence = meeting.weekdayTime else { return result }
             guard let result = result else { return occurrence }
             return min(occurrence, result)

@@ -49,16 +49,19 @@ struct EventView: View {
             
             Section {
                 LabeledContent("Type", value: event.type.description)
+                
                 if let credits = event.credits {
                     LabeledContent("Credits", value: credits, format: .number)
                 }
                 
-                NavigationLink {
-                    InstructorsView(instructors: event.instructors)
-                } label: {
-                    Text("Instructors")
-                        .badge(event.instructors.count)
-                        .badgeProminence(.decreased)
+                if let instructors = event.instructors {
+                    NavigationLink {
+                        InstructorsView(instructors: instructors)
+                    } label: {
+                        Text("Instructors")
+                            .badge(instructors.count)
+                            .badgeProminence(.decreased)
+                    }
                 }
             }
             
@@ -67,12 +70,14 @@ struct EventView: View {
                 
                 LabeledContent("Weekly Time", value: "\(event.weeklyHours)h")
                 
-                NavigationLink {
-                    EventGroupsView(event: self._event, groups: event.groups, colorHash: colorHash)
-                } label: {
-                    Text("Groups")
-                        .badge(event.groups.count)
-                        .badgeProminence(.decreased)
+                if let groups = event.groups {
+                    NavigationLink {
+                        EventGroupsView(event: self._event, groups: groups, colorHash: colorHash)
+                    } label: {
+                        Text("Groups")
+                            .badge(groups.count)
+                            .badgeProminence(.decreased)
+                    }
                 }
             }
             

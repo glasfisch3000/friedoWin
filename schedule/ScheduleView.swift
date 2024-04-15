@@ -102,7 +102,7 @@ struct ScheduleView: View {
                 let eventColorHash = (Double(eventIndex)/Double(groupedSchedule.count) + 0.4).truncatingRemainder(dividingBy: 1)
                 
                 for event in events {
-                    for group in event.groups {
+                    for group in event.groups ?? [] {
                         for meeting in group.meetings {
                             guard meeting.isOn(meetingDate, with: calendar) ?? false else { continue }
                             guard let start = meeting.fromTime else { continue }

@@ -16,7 +16,7 @@ extension Event {
         
         var term: Term
         
-        var groups: [Group]
+        var groups: [Group]?
         
         func construct(with additional: AdditionalInformation) -> Event {
             .init(id: self.id,
@@ -55,7 +55,7 @@ extension Event.ScheduleEvent {
         var credits: Int?
         
         var modules: [Event.Module]?
-        var instructors: [Instructor]
+        var instructors: [Instructor]?
     }
 }
 
@@ -90,6 +90,6 @@ extension Event.ScheduleEvent.AdditionalInformation: Decodable {
         self.credits = try container.decodeIfPresent(Int.self, forKey: .credits)
         
         self.modules = try container.decodeIfPresent([Event.Module].self, forKey: .modules)
-        self.instructors = try container.decode([Instructor].self, forKey: .instructors)
+        self.instructors = try container.decodeIfPresent([Instructor].self, forKey: .instructors)
     }
 }

@@ -172,13 +172,17 @@ struct MeetingView: View {
                     
                     Text(" of ")
                     
-                    switch event {
+                    switch event.groups {
                     case .error:
                         Text("?")
                     case .loading:
                         ProgressView()
-                    case .value(let event):
-                        Text(event.groups.count, format: .number)
+                    case .value(let groups):
+                        if let groups = groups {
+                            Text(groups.count, format: .number)
+                        } else {
+                            Text("-")
+                        }
                     }
                 }
             }
