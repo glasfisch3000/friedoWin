@@ -32,8 +32,14 @@ struct EventGroupsView: View {
                 Text("All Groups").tag(Selection.allGroups)
                 
                 ForEach(groups) { group in
-                    (Text("Group ") + Text(group.number, format: .number))
-                        .tag(Selection.single(group: group))
+                    Group {
+                        if let number = group.number {
+                            Text("Group ") + Text(number, format: .number)
+                        } else {
+                            Text("Unknown Group")
+                        }
+                    }
+                    .tag(Selection.single(group: group))
                 }
             }
             
@@ -110,7 +116,7 @@ struct EventGroupsView: View {
     func sort(_ groups: [Event.Group], event: Event?) -> [Int: TimetableWeekday<Item>] {
         var weekdays: [Int: TimetableWeekday<Item>] = [:]
         
-        let groups = groups.sorted { $0.number < $1.number }
+        let groups = groups.sorted { $0.id < $1.id }
         
         for weekday in 0..<7 {
             var columns: [TimetableColumn<Item>] = []
@@ -161,7 +167,14 @@ extension EventGroupsView {
         
         var type: Event.EventType? { meeting.type ?? event?.type }
         
-        var title: String { "Group \(group.number)" }
+        var title: String {
+            if let number = group.number {
+                "Group \(number)"
+            } else {
+                "Unknown Group"
+            }
+        }
+        
         var subtitle: String { type?.description ?? "" }
         
         func color(colorScheme: ColorScheme) -> Color {

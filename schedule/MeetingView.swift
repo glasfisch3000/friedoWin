@@ -159,21 +159,23 @@ struct MeetingView: View {
     @ViewBuilder private func groupSections(_ group: Event.Group) -> some View {
         Section {
             LabeledContent("Group") {
-                switch event {
-                case .error:
-                    Text(group.number, format: .number) +
-                    Text(" of ?")
-                case .loading:
-                    HStack(spacing: 0) {
-                        Text(group.number, format: .number) +
-                        Text(" of ")
-                        
-                        ProgressView()
+                HStack(spacing: 0) {
+                    if let number = group.number {
+                        Text(number, format: .number)
+                    } else {
+                        Text("?")
                     }
-                case .value(let event):
-                    Text(group.number, format: .number) +
-                    Text(" of ") +
-                    Text(event.groups.count, format: .number)
+                    
+                    Text(" of ")
+                    
+                    switch event {
+                    case .error:
+                        Text("?")
+                    case .loading:
+                        ProgressView()
+                    case .value(let event):
+                        Text(event.groups.count, format: .number)
+                    }
                 }
             }
             
