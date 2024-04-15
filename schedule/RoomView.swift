@@ -142,6 +142,16 @@ extension RoomView {
                 if building.additionalName != building.name {
                     LabeledContent("Additional Name", value: building.additionalName)
                 }
+                
+                if let rooms = building.rooms, !rooms.isEmpty {
+                    NavigationLink {
+                        BuildingRoomsView(rooms: rooms)
+                    } label: {
+                        Text("Rooms")
+                            .badge(rooms.count)
+                            .badgeProminence(.decreased)
+                    }
+                }
             }
             
             LabeledContent("Campus", value: building.campus)

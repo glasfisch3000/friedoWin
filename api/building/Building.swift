@@ -17,6 +17,8 @@ class Building: Decodable, ObservableObject {
     var campus: String
     var academyBuilding: String
     var location: Location?
+    
+    var rooms: [Building.Room]?
 }
 
 extension Building: Identifiable { }
