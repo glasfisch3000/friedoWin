@@ -8,15 +8,15 @@
 import Foundation
 
 class Room: Decodable, ObservableObject {
-    var id: Int
-    var type: RoomType
+    @Published var id: Int
+    @Published var type: RoomType
     
-    var name: String
-    var shortName: String
-    var additionalName: String
+    @Published var name: String
+    @Published var shortName: String
+    @Published var additionalName: String
     
-    var building: Room.Building
-    var images: [Int]?
+    @Published var building: Room.Building
+    @Published var images: [Int]?
 }
 
 extension Room: Identifiable { }
