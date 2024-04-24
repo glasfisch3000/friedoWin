@@ -5,8 +5,6 @@
 //  Created by Jakob Danckwerts on 03.04.24.
 //
 
-import Foundation
-import SwiftUI
 
 class FriedoWin {
     struct Credentials: Hashable, Codable {
