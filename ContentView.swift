@@ -215,35 +215,3 @@ extension UInt16: RawRepresentable {
         self.init(rawValue)
     }
 }
-
-@propertyWrapper
-struct ArrayAppStorage<Value>: DynamicProperty {
-    var key: String
-    var userDefaults: UserDefaults = .standard
-    
-    var wrappedValue: [Value] {
-        get { cachedValue }
-        set {
-            userDefaults.setValue(userDefaults, forKey: key)
-            cachedValue = newValue
-        }
-    }
-    
-    @State private var cachedValue: [Value]
-    
-    init(wrappedValue: [Value], _ key: String) {
-        self.key = key
-        self.cachedValue = wrappedValue
-        NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main, using: self.receive(_:))
-    }
-    
-    func receive(_ notification: Notification) {
-        guard let object = notification.object else { return }
-        guard let userDefaults = object as? UserDefaults else { return }
-        guard userDefaults == self.userDefaults else { return }
-        
-        guard let array = userDefaults.array(forKey: key) else { return }
-        guard let value = array as? [Value] else { return }
-        self.cachedValue = value
-    }
-}
