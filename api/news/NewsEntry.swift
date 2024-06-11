@@ -16,6 +16,11 @@ struct NewsEntry {
 }
 
 extension NewsEntry: Hashable { }
+
+extension NewsEntry: Identifiable {
+    var id: Self { self }
+}
+
 extension NewsEntry: Decodable {
     enum CodingKeys: CodingKey {
         case date
@@ -30,4 +35,8 @@ extension NewsEntry: Decodable {
         self.title = try container.decode(String.self, forKey: .title)
         self.body = try container.decode(String.self, forKey: .body).parseFriedoLinHTML()
     }
+}
+
+extension NewsEntry {
+    var signature: String { "\(date.year)/\(date.month)/\(date.day)/\(title)" }
 }

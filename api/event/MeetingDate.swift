@@ -26,3 +26,15 @@ extension Meeting.Date {
 }
 
 extension Meeting.Date: Hashable { }
+
+extension Meeting.Date: Comparable {
+    static func < (lhs: Meeting.Date, rhs: Meeting.Date) -> Bool {
+        if lhs.year < rhs.year { return true }
+        if lhs.year > rhs.year { return false }
+        
+        if lhs.month < rhs.month { return true }
+        if lhs.month > rhs.month { return false }
+        
+        return lhs.day < rhs.day
+    }
+}

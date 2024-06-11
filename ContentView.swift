@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     enum TabSelection: String, Hashable {
+        case news
         case personalInformation
         case schedule
         case cafeteria
@@ -27,6 +28,12 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
+            NewsView(news: servers.news)
+                .tag(TabSelection.news)
+                .tabItem {
+                    Label("News", systemImage: "newspaper")
+                }
+            
             Group {
                 if let authenticated = authenticated {
                     PersonalInformationView(personalInformation: authenticated.personalInformation)
