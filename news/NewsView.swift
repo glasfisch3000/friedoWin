@@ -45,6 +45,7 @@ struct NewsView: View {
                 }
             }
         }
+        .badge(news.value?.filter { !newsRead.contains($0.signature) }.count ?? 0)
     }
     
     @ViewBuilder private func loadingView() -> some View {
