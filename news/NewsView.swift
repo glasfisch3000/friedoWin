@@ -71,49 +71,61 @@ struct NewsView: View {
             }
         } else {
             List(news.sorted(using: KeyPathComparator(\.date, order: .reverse)), id: \.signature, rowContent: entryView(_:))
+                .listSectionSpacing(.compact)
         }
     }
     
     @ViewBuilder private func entryView(_ entry: NewsEntry) -> some View {
-        let read = newsRead.contains(entry.signature)
-        
-        Button {
-            entryPresented = entry
-            DispatchQueue.main.async {
-                newsRead.append(entry.signature)
-            }
-        } label: {
-            VStack(alignment: .leading) {
-                LabeledContent {
-                    if let date = entry.date.asDate() {
-                        Text(date, format: Date.FormatStyle(date: .numeric))
-                    } else {
-                        Text("–")
-                    }
-                } label: {
-                    HStack(alignment: .center) {
-                        if !read {
-                            Image(systemName: "circle.fill")
-                                .font(.caption2)
-                                .foregroundStyle(.blue)
-                        }
-                        
-                        Text(entry.title)
-                            .lineLimit(1)
-                    }
-                }
-            }
-        }
-        .buttonStyle(.plain)
-        .swipeActions(edge: .leading, allowsFullSwipe: true) {
-            Button(read ? "Unread" : "Read", systemImage: read ? "envelope.badge" : "envelope.open") {
-                if read {
-                    newsRead.removeAll { $0 == entry.signature }
-                } else {
+        Section {
+            let read = newsRead.contains(entry.signature)
+            
+            Button {
+                entryPresented = entry
+                DispatchQueue.main.async {
                     newsRead.append(entry.signature)
                 }
+            } label: {
+                VStack(alignment: .leading) {
+                    VStack(alignment: .leading) {
+                        LabeledContent {
+                            if let date = entry.date.asDate() {
+                                Text(date, format: .relative(presentation: .named))
+                            } else {
+                                Text("–")
+                            }
+                        } label: {
+                            HStack(alignment: .center) {
+                                if !read {
+                                    Image(systemName: "circle.fill")
+                                        .font(.caption2)
+                                        .foregroundStyle(.blue)
+                                }
+                                
+                                Text(entry.title)
+                                    .lineLimit(1)
+                                    .font(.headline)
+                            }
+                        }
+                        
+                        if var body = entry.body {
+                            let _ = body.swiftUI.font = .caption
+                            Text(body)
+                                .lineLimit(2)
+                        }
+                    }
+                }
             }
-            .tint(.blue)
+            .buttonStyle(.plain)
+            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                Button(read ? "Unread" : "Read", systemImage: read ? "envelope.badge" : "envelope.open") {
+                    if read {
+                        newsRead.removeAll { $0 == entry.signature }
+                    } else {
+                        newsRead.append(entry.signature)
+                    }
+                }
+                .tint(.blue)
+            }
         }
     }
 }
