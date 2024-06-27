@@ -17,6 +17,8 @@ struct InstructorsView: View {
                 
                 if let responsibility = instructor.responsibility {
                     Text(responsibility.description)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
         }
