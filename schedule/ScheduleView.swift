@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CryptoKit
-import Crypto
 
 struct ScheduleView: View {
     @APIFetchable var schedule: FetchableStatus<Schedule>

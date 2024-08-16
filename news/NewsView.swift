@@ -86,33 +86,45 @@ struct NewsView: View {
                     newsRead.append(entry.signature)
                 }
             } label: {
-                VStack(alignment: .leading) {
-                    VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: 7) {
+                    VStack(alignment: .leading, spacing: 1.5) {
                         LabeledContent {
-                            if let date = entry.date.asDate() {
-                                Text(date, format: .relative(presentation: .named))
-                            } else {
-                                Text("–")
-                            }
+                            Text(entry.date, format: .relative(presentation: .named))
+                                .font(.subheadline)
                         } label: {
                             HStack(alignment: .center) {
                                 if !read {
                                     Image(systemName: "circle.fill")
-                                        .font(.caption2)
+                                        .font(.caption)
                                         .foregroundStyle(.blue)
                                 }
                                 
                                 Text(entry.title)
                                     .lineLimit(1)
-                                    .font(.headline)
+                                    .font(.title3.weight(.semibold))
                             }
                         }
                         
-                        if var body = entry.body {
-                            let _ = body.swiftUI.font = .caption
-                            Text(body)
-                                .lineLimit(2)
+                        Group {
+                            switch entry.source {
+                            case .friedolin: Text("Friedolin News")
+                            case .moodle: Text("Moodle Nachrichten")
+                            case .fsrInformatik: Text("FSR Informatik")
+                            }
                         }
+                        .font(.caption2)
+                        .padding(.horizontal, 4)
+                        .padding(.vertical, 1)
+                        .background {
+                            RoundedRectangle(cornerRadius: 5)
+                                .stroke(.foreground, lineWidth: 0.5)
+                        }
+                    }
+                    
+                    if var body = entry.body {
+                        let _ = body.swiftUI.font = .caption
+                        Text(body)
+                            .lineLimit(3)
                     }
                 }
             }

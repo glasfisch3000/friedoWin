@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Crypto
+import CryptoKit
 import UIKit
 
 class Event: Decodable, ObservableObject {

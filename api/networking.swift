@@ -8,6 +8,16 @@
 import Foundation
 import Vapor
 
+fileprivate let jsonDecoder: JSONDecoder = {
+    let decoder = JSONDecoder()
+    
+    let dateFormatter = DateFormatter()
+    dateFormatter.dateFormat = "yyyy-MM-dd"
+    decoder.dateDecodingStrategy = .formatted(dateFormatter)
+    
+    return decoder
+}()
+
 extension FriedoWin.Server {
     func makeURLPrefix() -> String {
         self.constructed + "/"
@@ -102,8 +112,7 @@ extension FriedoWin.Server {
         guard response.status.mayHaveResponseBody else { throw RequestError.httpError(status: response.status) }
         
         guard let body = response.body else { throw RequestError.missingBody }
-        print(body.getString(at: body.readerIndex, length: body.readableBytes) ?? "")
-        return try JSONDecoder().decode(type, from: body)
+        return try jsonDecoder.decode(type, from: body)
     }
 }
 
@@ -130,8 +139,7 @@ extension FriedoWin.Server {
         guard response.status.mayHaveResponseBody else { throw RequestError.httpError(status: response.status) }
         
         guard let body = response.body else { throw RequestError.missingBody }
-//        print(body.getString(at: body.readerIndex, length: body.readableBytes) ?? "")
-        return try JSONDecoder().decode(type, from: body)
+        return try jsonDecoder.decode(type, from: body)
     }
 }
 
